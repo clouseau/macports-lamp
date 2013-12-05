@@ -1,0 +1,116 @@
+#!/bin/bash
+
+# Update ports tree.
+port selfupdate
+
+# Remove startup items; these will be replaced.
+rm /Library/LaunchDaemons/org.macports.org.macports.apache2.plist
+rm /Library/LaunchDaemons/org.macports.org.macports.mysql55-server.plist
+rm /Library/LaunchDaemons/org.macports.org.macports.slapd.plist
+
+# Start with MySQL server.
+port install mysql55-server
+
+# Create initial databases.
+sudo -u _mysql /opt/local/lib/mysql55/bin/mysql_install_db
+
+# Map mysql command-line binaries to the version we are installing.
+port select mysql mysql55
+
+# Start MySQL.
+port load mysql55-server
+
+# Need enough time for tablespace creation or expect will not connect.
+sleep 15
+
+# A heredoc for expect that automatically answers the questions.
+expect -- << EOF
+spawn mysql_secure_installation
+expect "Enter current password for root (enter for none):"
+send "\r"
+	
+expect "Set root password?"
+send "y\r"
+
+expect "New password:"
+send "password\r"
+
+expect "Re-enter new password:"
+send "password\r"
+
+expect "Remove anonymous users?"
+send "y\r"
+
+expect "Disallow root login remotely?"
+send "y\r"
+
+expect "Remove test database and access to it?"
+send "y\r"
+
+expect "Reload privilege tables now?"
+send "y\r"
+EOF
+
+# Install apache2 and friends.
+port install apache2
+port install php54-apache2handler
+port install php54-gd php54-ldap php54-mbstring php54-mcrypt php54-mysql php54-pear php54-APC
+port install php54-iconv php54-xdebug php54-openssl
+port install pear-PEAR
+/opt/local/apache2/bin/apxs -a -e -n php5 mod_php54.so
+
+defSock='/opt/local/var/run/mysql55/mysqld.sock'
+cat /opt/local/etc/php54/php.ini-development | sed \
+  -e "s#pdo_mysql\.default_socket.*#pdo_mysql\.default_socket=${defSock}#" \
+  -e "s#mysql\.default_socket.*#mysql\.default_socket=${defSock}#" \
+  -e "s#mysqli\.default_socket.*#mysqli\.default_socket=${defSock}#" > /opt/local/etc/php54/php.ini
+echo "date.timezone = 'America/Chicago'" >> /opt/local/etc/php54/php.ini
+echo "error_log = /var/log/php.log" >> /opt/local/etc/php54/php.ini
+
+# PHP will log errors to /var/log/php.log.
+touch /var/log/php.log
+chown _www /var/log/php.log
+
+cp /opt/local/apache2/conf/httpd.conf /opt/local/apache2/conf/httpd.conf.bak
+cp /opt/local/apache2/conf/extra/httpd-vhosts.conf /opt/local/apache2/conf/extra/httpd-vhosts.conf.bak
+
+# Websites will live in ~/Sites.
+mkdir -p ~/Sites
+chown -R $USER ~/Sites
+
+FQHN=$(hostname)
+echo "127.0.0.1 local.dev" >> /etc/hosts
+MYIP=$(ipconfig getifaddr en0)
+echo "Include conf/extra/httpd-vhosts.conf" >> /opt/local/apache2/conf/httpd.conf
+echo "ServerName $FQHN:80" >> /opt/local/apache2/conf/httpd.conf
+echo "Include conf/extra/mod_php54.conf" >> /opt/local/apache2/conf/httpd.conf
+echo "NameVirtualHost *:80" > /opt/local/apache2/conf/extra/httpd-vhosts.conf
+echo "<VirtualHost *:80>" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
+echo "    ServerName local.dev" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
+echo "    DocumentRoot "$HOME/Sites"" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
+echo "    <Directory "$HOME/Sites">" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
+echo "      Options Indexes FollowSymLinks" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
+echo "      DirectoryIndex index.php index.html" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
+echo "      Order deny,allow" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
+echo "      Allow from 127.0.0.1 $MYIP" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
+echo "      AllowOverride All" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
+echo "    </Directory>" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
+echo "</VirtualHost>" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
+
+# Start Apache
+sudo port load apache2
+
+# Back up system binaries.
+mv /usr/bin/php /usr/bin/php.stock
+mv /usr/bin/php-config /usr/bin/php-config.stock
+mv /usr/bin/phpize /usr/bin/phpize.stock
+
+# Map php, php-config, phpize to php54.
+port select php php54
+
+echo 'te() { tail -f /opt/local/apache2/logs/error_log; }' >> ~/.profile
+echo 'ta() { tail -f /opt/local/apache2/logs/access_log; }' >> ~/.profile
+echo 'tp() { tail -f /var/log/php/error.log; }' >> ~/.profile
+echo "alias acr='sudo /opt/local/apache2/bin/apachectl -k restart'" >> ~/.profile
+
+echo "Complete. Open a new Terminal window for profile settings to take effect."
