@@ -58,10 +58,12 @@ Shortcuts
 The following functions will be installed in ~/.profile. I find them useful
 at the command line:
 
+```
 te - tail Apache error log
 ta - tail Apache access log
 tp - tail PHP error log
 acr - apachectl restart
+```
 
 Running the Script
 ------------------
@@ -82,5 +84,6 @@ sudo ./install_drush
 Reference
 ---------
 https://trac.macports.org/wiki/howto/MAMP
+
 http://aaronbonner.io/post/44973182283/a-guide-to-php-mysql-and-nginx-on-macports
 
