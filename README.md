@@ -1,7 +1,7 @@
 macports-lamp
 =============
 
-Builds a LAMP stack on OS X 10.9 using MacPorts.
+Builds a LAMP (MAMP) stack on OS X 10.9 Mavericks using MacPorts.
 
 Intended to be used on a fresh 10.9 install.
 
@@ -10,12 +10,13 @@ Why
 MacPorts is powerful but finicky. I commonly end up with MySQL (I know, we're
 all switching to MariaDB soon) with the wrong permissions and other little
 niggling trouble. Therefore this script, which will reliably install MySQL 5.5
-and PHP 5.4 on 10.9. At least, for me. Tested with MacPorts 2.2.1 on 10.9.0.
+and PHP 5.4 plus Apache on 10.9. At least, for me. Tested with MacPorts 2.2.1 
+on OS X 10.9.0.
 
 Prerequisites
 -------------
 
-Install [MacPorts](http://www.macports.org/install.php).
+Install [MacPorts](http://www.macports.org/install.php) with its prerequisites.
 
 Create a my.cnf and put it at /etc/my.cnf. You could use the [Percona Wizard](https://tools.percona.com/wizard).
 
