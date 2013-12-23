@@ -18,6 +18,13 @@ Prerequisites
 
 Install [MacPorts](http://www.macports.org/install.php) with its prerequisites.
 
+Make sure to install XCode and do
+
+```
+sudo xcodebuild -license
+xcode-select --install
+```
+
 Create a my.cnf and put it at /etc/my.cnf. You could use the [Percona Wizard](https://tools.percona.com/wizard).
 
 Ensure that /etc/my.cnf has a line for the socket MacPorts will use:
