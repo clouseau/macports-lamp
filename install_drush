@@ -1,9 +1,10 @@
 #!/bin/bash
 
 port install pear-Console_Table
-grep -q '/opt/local/lib/php/pear/bin' ~/.profile || echo 'export PATH=$PATH:/opt/local/lib/php/pear/bin' >> ~/.profile
-grep -q 'PHP_PEAR_PHP_BIN' ~/.profile || echo "alias pear='PHP_PEAR_PHP_BIN=/opt/local/bin/php pear'" >> ~/.profile
+grep -q '/opt/local/lib/php/pear/bin' ~/.bash_profile || echo 'export PATH=$PATH:/opt/local/lib/php/pear/bin' >> ~/.bash_profile
+grep -q 'PHP_PEAR_PHP_BIN' ~/.bash_profile || echo "alias pear='PHP_PEAR_PHP_BIN=/opt/local/bin/php pear'" >> ~/.bash_profile
 PATH=$PATH:/opt/local/lib/php/pear/bin
+export PHP_PEAR_PHP_BIN=/opt/local/bin/php
 
 pear config-set php_bin /opt/local/bin/php
 pear config-set php_dir /opt/local/lib/php/pear
