@@ -108,9 +108,9 @@ mv /usr/bin/phpize /usr/bin/phpize.stock
 # Map php, php-config, phpize to php54.
 port select php php54
 
-echo 'te() { tail -f /opt/local/apache2/logs/error_log; }' >> ~/.profile
-echo 'ta() { tail -f /opt/local/apache2/logs/access_log; }' >> ~/.profile
-echo 'tp() { tail -f /var/log/php/error.log; }' >> ~/.profile
-echo "alias acr='sudo /opt/local/apache2/bin/apachectl -k restart'" >> ~/.profile
+echo 'te() { tail -f /opt/local/apache2/logs/error_log; }' >> ~/.bash_profile
+echo 'ta() { tail -f /opt/local/apache2/logs/access_log; }' >> ~/.bash_profile
+echo 'tp() { tail -f /var/log/php/error.log; }' >> ~/.bash_profile
+echo "alias acr='sudo /opt/local/apache2/bin/apachectl -k restart'" >> ~/.bash_profile
 
 echo "Complete. Open a new Terminal window for profile settings to take effect."
