@@ -11,7 +11,7 @@ MacPorts is powerful but finicky. I commonly end up with MySQL (I know, we're
 all switching to MariaDB soon) with the wrong permissions and other little
 niggling trouble. Therefore this script, which will reliably install MySQL 5.5
 and PHP 5.4 plus Apache on 10.9. At least, for me. Tested with MacPorts 2.2.1 
-on OS X 10.9.0.
+on OS X 10.9.1.
 
 Prerequisites
 -------------
