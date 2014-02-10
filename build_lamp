@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ -z $SUDO_USER ]; then
+  echo "Please run the script using sudo, e.g.,"
+  echo ""
+  echo "sudo ./build_lamp"
+  exit 1
+fi
+
 # Update ports tree.
 port selfupdate
 
@@ -21,8 +28,10 @@ port select mysql mysql55
 port load mysql55-server
 
 # Need enough time for tablespace creation or expect will not connect.
-sleep 15
+sleep 20
 
+# Expect is not always working as, heh heh, expected. If mysql_secure_connection
+# fails, it can be run after the script completes.
 # A heredoc for expect that automatically answers the questions.
 expect -- << EOF
 spawn mysql_secure_installation
@@ -58,6 +67,7 @@ port install php54-gd php54-ldap php54-mbstring php54-mcrypt php54-mysql php54-p
 port install php54-iconv php54-xdebug php54-openssl
 port install pear-PEAR
 /opt/local/apache2/bin/apxs -a -e -n php5 mod_php54.so
+chown $SUDO_USER ~/.pearrc
 
 defSock='/opt/local/var/run/mysql55/mysqld.sock'
 cat /opt/local/etc/php54/php.ini-development | sed \
@@ -76,7 +86,7 @@ cp /opt/local/apache2/conf/extra/httpd-vhosts.conf /opt/local/apache2/conf/extra
 
 # Websites will live in ~/Sites.
 mkdir -p ~/Sites
-chown -R $USER ~/Sites
+chown -R $SUDO_USER ~/Sites
 
 FQHN=$(hostname)
 echo "127.0.0.1 local.dev" >> /etc/hosts
