@@ -7,7 +7,7 @@ if [ -z $SUDO_USER ]; then
   exit 1
 fi
 
-PORTFOUND=$(type -P porty)
+PORTFOUND=$(type -P port)
 if [ "$PORTFOUND" == "" ]; then
   echo "port command not found. Please ensure that MacPorts has been installed."
   echo "Then log out, log in, and try again."
