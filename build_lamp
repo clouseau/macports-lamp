@@ -37,8 +37,13 @@ port load mysql55-server
 # Need enough time for tablespace creation or expect will not connect.
 sleep 20
 
-# Expect is not always working as, heh heh, expected. If mysql_secure_connection
-# fails, it can be run after the script completes.
+echo ""
+echo "If the following fails, you will need to run mysql_secure_installation"
+echo "by hand after the script completes."
+echo ""
+
+# Expect is not always working as, heh heh, expected. If 
+# mysql_secure_installation fails, it can be run after the script completes.
 # A heredoc for expect that automatically answers the questions.
 expect -- << EOF
 spawn mysql_secure_installation
@@ -110,6 +115,7 @@ echo "      Options Indexes FollowSymLinks" >> /opt/local/apache2/conf/extra/htt
 echo "      DirectoryIndex index.php index.html" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
 echo "      Order deny,allow" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
 echo "      Allow from 127.0.0.1 $MYIP" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
+echo "      Deny from all" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
 echo "      AllowOverride All" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
 echo "    </Directory>" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
 echo "</VirtualHost>" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
