@@ -77,6 +77,7 @@ port install apache2
 port install php54-apache2handler
 port install php54-gd php54-ldap php54-mbstring php54-mcrypt php54-mysql php54-pear php54-APC
 port install php54-iconv php54-xdebug php54-openssl
+port install php54-curl
 port install pear-PEAR
 /opt/local/apache2/bin/apxs -a -e -n php5 mod_php54.so
 chown $SUDO_USER ~/.pearrc
