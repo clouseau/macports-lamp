@@ -19,58 +19,7 @@ port selfupdate
 
 # Remove startup items; these will be replaced.
 rm /Library/LaunchDaemons/org.macports.org.macports.apache2.plist
-rm /Library/LaunchDaemons/org.macports.org.macports.mysql55-server.plist
 rm /Library/LaunchDaemons/org.macports.org.macports.slapd.plist
-
-# Start with MySQL server.
-port install mysql55-server
-
-# Create initial databases.
-sudo -u _mysql /opt/local/lib/mysql55/bin/mysql_install_db
-
-# Map mysql command-line binaries to the version we are installing.
-port select mysql mysql55
-
-# Start MySQL.
-port load mysql55-server
-
-# Need enough time for tablespace creation or expect will not connect.
-sleep 20
-
-echo ""
-echo "If the following fails, you will need to run mysql_secure_installation"
-echo "by hand after the script completes."
-echo ""
-
-# Expect is not always working as, heh heh, expected. If 
-# mysql_secure_installation fails, it can be run after the script completes.
-# A heredoc for expect that automatically answers the questions.
-expect -- << EOF
-spawn mysql_secure_installation
-expect "Enter current password for root (enter for none):"
-send "\r"
-	
-expect "Set root password?"
-send "y\r"
-
-expect "New password:"
-send "password\r"
-
-expect "Re-enter new password:"
-send "password\r"
-
-expect "Remove anonymous users?"
-send "y\r"
-
-expect "Disallow root login remotely?"
-send "y\r"
-
-expect "Remove test database and access to it?"
-send "y\r"
-
-expect "Reload privilege tables now?"
-send "y\r"
-EOF
 
 # Install apache2 and friends.
 port install apache2
@@ -136,5 +85,6 @@ echo 'te() { tail -f /opt/local/apache2/logs/error_log; }' >> ~/.bash_profile
 echo 'ta() { tail -f /opt/local/apache2/logs/access_log; }' >> ~/.bash_profile
 echo 'tp() { tail -f /var/log/php.log; }' >> ~/.bash_profile
 echo "alias acr='sudo /opt/local/apache2/bin/apachectl -k restart'" >> ~/.bash_profile
-
+echo
+echo "MySQL was not installed. To install, run separate script build_mysql."
 echo "Complete. Open a new Terminal window for profile settings to take effect."

@@ -73,11 +73,12 @@ tp - tail PHP error log
 acr - apachectl restart
 ```
 
-Running the Script
-------------------
+Running the Scripts
+-------------------
 
 ```
 sudo ./build_lamp
+sudo ./build_mysql
 ```
 
 Drush
