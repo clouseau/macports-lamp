@@ -1,17 +1,20 @@
 macports-lamp
 =============
 
-Builds a LAMP (MAMP) stack on OS X 10.9 Mavericks using MacPorts.
+Builds a LAMP (MAMP) stack on OS X 10.9 Mavericks or 10.10 Yosemite using 
+MacPorts.
 
-Intended to be used on a fresh 10.9 install.
+Intended to be used on a fresh 10.9 or 10.10 install.
+
+Please read this README all the way through before beginning.
 
 Why
 ---
 MacPorts is powerful but finicky. I commonly end up with MySQL (I know, we're
 all switching to MariaDB soon) with the wrong permissions and other little
 niggling trouble. Therefore this script, which will reliably install MySQL 5.5
-and PHP 5.4 plus Apache on 10.9. At least, for me. Tested with MacPorts 2.2.1 
-on OS X 10.9.1.
+and PHP 5.4 plus Apache on OS X. At least, for me. Tested with MacPorts 2.2.1 
+on OS X 10.9.1 and MacPorts 2.2.3 on OS X 10.10.1.
 
 Prerequisites
 -------------
@@ -89,6 +92,9 @@ If you need [Drush](http://drush.ws) (used for Drupal development):
 ```
 sudo ./install_drush
 ```
+
+Note: this will install Drush 5, which is in its golden years. You probably
+want a newer Drush than this.
 
 Reference
 ---------
