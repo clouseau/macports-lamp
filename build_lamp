@@ -88,3 +88,7 @@ echo "alias acr='sudo /opt/local/apache2/bin/apachectl -k restart'" >> ~/.bash_p
 echo
 echo "MySQL was not installed. To install, run separate script build_mysql."
 echo "Complete. Open a new Terminal window for profile settings to take effect."
+echo
+echo 'Note that if MacPorts put its $PATH modification code into .profile then'
+echo ".bash_profile will not be run."
+echo "See http://stackoverflow.com/questions/18773051/how-to-make-os-x-to-read-bash-profile-not-profile-file"
