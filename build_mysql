@@ -62,3 +62,15 @@ echo "MySQL should now be installed."
 echo
 echo "If you want it to start at startup, type:"
 echo "sudo launchctl load -w /Library/LaunchDaemons/org.macports.mysql55-server.plist"
+echo
+echo "If you cannot get into MySQL you can reset the root password by"
+echo "starting it manually:"
+echo
+echo "sudo -u _mysql /opt/local/lib/mysql55/bin/mysqld --user=_mysql --skip-grant-tables"
+echo
+echo "Then type mysql at the command line and set the root password:"
+echo
+echo "USE mysql;"
+echo "UPDATE user SET password=PASSWORD('foo') WHERE User='root';"
+echo "FLUSH PRIVILEGES;"
+echo
