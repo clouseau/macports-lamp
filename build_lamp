@@ -23,21 +23,21 @@ rm /Library/LaunchDaemons/org.macports.slapd.plist
 
 # Install apache2 and friends.
 port install apache2
-port install php54-apache2handler
-port install php54-gd php54-ldap php54-mbstring php54-mcrypt php54-mysql php54-pear php54-APC
-port install php54-iconv php54-xdebug php54-openssl
-port install php54-curl
+port install php56-apache2handler
+port install php56-gd php56-ldap php56-mbstring php56-mcrypt php56-mysql php56-pear php56-APC
+port install php56-iconv php56-xdebug php56-openssl
+port install php56-curl
 port install pear-PEAR
-/opt/local/apache2/bin/apxs -a -e -n php5 mod_php54.so
+/opt/local/apache2/bin/apxs -a -e -n php5 mod_php56.so
 chown $SUDO_USER ~/.pearrc
 
 defSock='/opt/local/var/run/mysql55/mysqld.sock'
-cat /opt/local/etc/php54/php.ini-development | sed \
+cat /opt/local/etc/php56/php.ini-development | sed \
   -e "s#pdo_mysql\.default_socket.*#pdo_mysql\.default_socket=${defSock}#" \
   -e "s#mysql\.default_socket.*#mysql\.default_socket=${defSock}#" \
-  -e "s#mysqli\.default_socket.*#mysqli\.default_socket=${defSock}#" > /opt/local/etc/php54/php.ini
-echo "date.timezone = 'America/Chicago'" >> /opt/local/etc/php54/php.ini
-echo "error_log = /var/log/php.log" >> /opt/local/etc/php54/php.ini
+  -e "s#mysqli\.default_socket.*#mysqli\.default_socket=${defSock}#" > /opt/local/etc/php56/php.ini
+echo "date.timezone = 'America/Chicago'" >> /opt/local/etc/php56/php.ini
+echo "error_log = /var/log/php.log" >> /opt/local/etc/php56/php.ini
 
 # PHP will log errors to /var/log/php.log.
 touch /var/log/php.log
@@ -55,7 +55,7 @@ echo "127.0.0.1 local.dev" >> /etc/hosts
 MYIP=$(ipconfig getifaddr en0)
 echo "Include conf/extra/httpd-vhosts.conf" >> /opt/local/apache2/conf/httpd.conf
 echo "ServerName $FQHN:80" >> /opt/local/apache2/conf/httpd.conf
-echo "Include conf/extra/mod_php54.conf" >> /opt/local/apache2/conf/httpd.conf
+echo "Include conf/extra/mod_php56.conf" >> /opt/local/apache2/conf/httpd.conf
 echo "NameVirtualHost *:80" > /opt/local/apache2/conf/extra/httpd-vhosts.conf
 echo "<VirtualHost *:80>" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
 echo "    ServerName local.dev" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
@@ -78,8 +78,8 @@ mv /usr/bin/php /usr/bin/php.stock
 mv /usr/bin/php-config /usr/bin/php-config.stock
 mv /usr/bin/phpize /usr/bin/phpize.stock
 
-# Map php, php-config, phpize to php54.
-port select php php54
+# Map php, php-config, phpize to php56.
+port select php php56
 
 echo 'te() { tail -f /opt/local/apache2/logs/error_log; }' >> ~/.bash_profile
 echo 'ta() { tail -f /opt/local/apache2/logs/access_log; }' >> ~/.bash_profile
