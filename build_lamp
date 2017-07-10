@@ -74,9 +74,12 @@ echo "</VirtualHost>" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
 sudo port load apache2
 
 # Back up system binaries.
+echo "Ignore any errors that appear below. If System Integrity Protection is"
+echo "enabled (which is the default) macOS will not let us change /usr/bin."
 mv /usr/bin/php /usr/bin/php.stock
 mv /usr/bin/php-config /usr/bin/php-config.stock
 mv /usr/bin/phpize /usr/bin/phpize.stock
+echo "OK, start paying attention to errors again."
 
 # Map php, php-config, phpize to php56.
 port select php php56
