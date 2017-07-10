@@ -1,9 +1,9 @@
 macports-lamp
 =============
 
-Builds a LAMP (MAMP) stack on OS X 10.11 El Capitan using MacPorts.
+Builds a LAMP (MAMP) stack on macOS 10.12 Sierra using MacPorts.
 
-Intended to be used on a fresh 10.11 install.
+Intended to be used on a fresh 10.12 install.
 
 Please read this README all the way through before beginning.
 
@@ -13,7 +13,7 @@ MacPorts is powerful but finicky. I commonly end up with MySQL (I know, we're
 all switching to MariaDB soon) with the wrong permissions and other little
 niggling trouble. Therefore this script, which will reliably install MySQL 5.5
 and PHP 5.6 plus Apache 2.2 on OS X. At least, for me. Tested with MacPorts 
-2.3.5 on OS X 10.11.
+2.4.1 on OS X 10.12.
 
 Prerequisites
 -------------
@@ -39,7 +39,7 @@ Read Through the Script
 -----------------------
 
 Note that it will set your MySQL root password to "password" unless you
-change this in the expect heredoc (ca. lines 36, 39).
+change this in the expect heredoc (ca. lines 36, 39 of the build_mysql script).
 
 Default Virtual Host
 --------------------
