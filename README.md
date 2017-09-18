@@ -45,12 +45,12 @@ Default Virtual Host
 --------------------
 
 The script will create the following virtual host which can be reached by
-going to http://local.dev/ after the script completes.
+going to http://local.test/ after the script completes.
 
 ```
 NameVirtualHost *:80
 <VirtualHost *:80>
-    ServerName local.dev
+    ServerName local.test
     DocumentRoot /Users/username/Sites
     <Directory /Users/username/Sites>
       Options Indexes FollowSymLinks
