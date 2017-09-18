@@ -51,14 +51,14 @@ mkdir -p ~/Sites
 chown -R $SUDO_USER ~/Sites
 
 FQHN=$(hostname)
-echo "127.0.0.1 local.dev" >> /etc/hosts
+echo "127.0.0.1 local.test" >> /etc/hosts
 MYIP=$(ipconfig getifaddr en0)
 echo "Include conf/extra/httpd-vhosts.conf" >> /opt/local/apache2/conf/httpd.conf
 echo "ServerName $FQHN:80" >> /opt/local/apache2/conf/httpd.conf
 echo "Include conf/extra/mod_php56.conf" >> /opt/local/apache2/conf/httpd.conf
 echo "NameVirtualHost *:80" > /opt/local/apache2/conf/extra/httpd-vhosts.conf
 echo "<VirtualHost *:80>" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
-echo "    ServerName local.dev" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
+echo "    ServerName local.test" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
 echo "    DocumentRoot "$HOME/Sites"" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
 echo "    <Directory "$HOME/Sites">" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
 echo "      Options Indexes FollowSymLinks" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
