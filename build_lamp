@@ -43,8 +43,8 @@ echo "error_log = /var/log/php.log" >> /opt/local/etc/php56/php.ini
 touch /var/log/php.log
 chown _www /var/log/php.log
 
-cp /opt/local/apache2/conf/httpd.conf /opt/local/apache2/conf/httpd.conf.bak
-cp /opt/local/apache2/conf/extra/httpd-vhosts.conf /opt/local/apache2/conf/extra/httpd-vhosts.conf.bak
+cp /opt/local/etc/apache2/conf/httpd.conf /opt/local/etc/apache2/conf/httpd.conf.bak
+cp /opt/local/etc/apache2/extra/httpd-vhosts.conf /opt/local/etc/apache2/extra/httpd-vhosts.conf.bak
 
 # Websites will live in ~/Sites.
 mkdir -p ~/Sites
@@ -53,22 +53,20 @@ chown -R $SUDO_USER ~/Sites
 FQHN=$(hostname)
 echo "127.0.0.1 local.test" >> /etc/hosts
 MYIP=$(ipconfig getifaddr en0)
-echo "Include conf/extra/httpd-vhosts.conf" >> /opt/local/apache2/conf/httpd.conf
-echo "ServerName $FQHN:80" >> /opt/local/apache2/conf/httpd.conf
-echo "Include conf/extra/mod_php56.conf" >> /opt/local/apache2/conf/httpd.conf
-echo "NameVirtualHost *:80" > /opt/local/apache2/conf/extra/httpd-vhosts.conf
-echo "<VirtualHost *:80>" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
-echo "    ServerName local.test" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
-echo "    DocumentRoot "$HOME/Sites"" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
-echo "    <Directory "$HOME/Sites">" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
-echo "      Options Indexes FollowSymLinks" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
-echo "      DirectoryIndex index.php index.html" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
-echo "      Order deny,allow" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
-echo "      Allow from 127.0.0.1 $MYIP" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
-echo "      Deny from all" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
-echo "      AllowOverride All" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
-echo "    </Directory>" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
-echo "</VirtualHost>" >> /opt/local/apache2/conf/extra/httpd-vhosts.conf
+echo "Include etc/apache2/extra/httpd-vhosts.conf" >> /opt/local/etc/apache2/conf/httpd.conf
+echo "ServerName $FQHN:80" >> /opt/local/etc/apache2/conf/httpd.conf
+echo "Include etc/apache2/extra/mod_php56.conf" >> /opt/local/etc/apache2/conf/httpd.conf
+echo "<VirtualHost *:80>" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "    ServerName local.test" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "    DocumentRoot "$HOME/Sites"" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "    <Directory "$HOME/Sites">" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "      Options Indexes FollowSymLinks" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "      DirectoryIndex index.php index.html" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "      Require ip 127.0.0.1 $MYIP" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "      Deny from all" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "      AllowOverride All" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "    </Directory>" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "</VirtualHost>" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
 
 # Start Apache
 sudo port load apache2
@@ -84,10 +82,10 @@ echo "OK, start paying attention to errors again."
 # Map php, php-config, phpize to php56.
 port select php php56
 
-echo 'te() { tail -f /opt/local/apache2/logs/error_log; }' >> ~/.bash_profile
-echo 'ta() { tail -f /opt/local/apache2/logs/access_log; }' >> ~/.bash_profile
+echo 'te() { tail -f /opt/local/var/log/apache2/error_log; }' >> ~/.bash_profile
+echo 'ta() { tail -f /opt/local/var/log/apache2/access_log; }' >> ~/.bash_profile
 echo 'tp() { tail -f /var/log/php.log; }' >> ~/.bash_profile
-echo "alias acr='sudo /opt/local/apache2/bin/apachectl -k restart'" >> ~/.bash_profile
+echo "alias acr='sudo /opt/local/sbin/apachectl -k restart'" >> ~/.bash_profile
 echo
 echo "MySQL was not installed. To install, run separate script build_mysql."
 echo "Complete. Open a new Terminal window for profile settings to take effect."
