@@ -1,9 +1,10 @@
 macports-lamp
 =============
 
-Builds a LAMP (MAMP) stack on macOS 10.12 Sierra using MacPorts.
+Builds a LAMP (MAMP) stack on macOS 10.13 High Sierra using MacPorts.
 
-Intended to be used on a fresh 10.12 install.
+Intended to be used on a fresh 10.13 install. For previous versions of macOS
+use the pre-high-sierra branch.
 
 Please read this README all the way through before beginning.
 
@@ -12,8 +13,8 @@ Why
 MacPorts is powerful but finicky. I commonly end up with MySQL (I know, we're
 all switching to MariaDB soon) with the wrong permissions and other little
 niggling trouble. Therefore this script, which will reliably install MySQL 5.5
-and PHP 5.6 plus Apache 2.2 on OS X. At least, for me. Tested with MacPorts 
-2.4.1 on OS X 10.12.
+and PHP 5.6 plus Apache 2.4 on OS X. At least, for me. Tested with MacPorts 
+2.4.2 on OS X 10.13.
 
 Prerequisites
 -------------
