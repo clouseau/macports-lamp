@@ -87,7 +87,7 @@ port select php php56
 echo 'te() { tail -f /opt/local/var/log/apache2/error_log; }' >> ~/.bash_profile
 echo 'ta() { tail -f /opt/local/var/log/apache2/access_log; }' >> ~/.bash_profile
 echo 'tp() { tail -f /var/log/php.log; }' >> ~/.bash_profile
-echo "alias acr='sudo /opt/local/sbin/apachectl -k restart'" >> ~/.bash_profile
+echo "alias acr='sudo port unload apache2;sudo port load apache2'" >> ~/.bash_profile
 echo
 echo "MySQL was not installed. To install, run separate script build_mysql."
 echo "Complete. Open a new Terminal window for profile settings to take effect."
