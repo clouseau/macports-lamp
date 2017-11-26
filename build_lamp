@@ -50,7 +50,7 @@ fi
 
 # Websites will live in ~/Sites.
 mkdir -p ~/Sites
-chown -R $SUDO_USER ~/Sites
+chown $SUDO_USER ~/Sites
 
 FQHN=$(hostname)
 echo "127.0.0.1 local.test" >> /etc/hosts
