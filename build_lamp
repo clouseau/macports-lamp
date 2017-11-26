@@ -71,7 +71,7 @@ echo "    </Directory>" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
 echo "</VirtualHost>" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
 
 # Start Apache
-sudo port load apache2
+port load apache2
 
 # Back up system binaries.
 echo "Ignore any errors that appear below. If System Integrity Protection is"
