@@ -2,47 +2,77 @@
 
 # Remove startup items; these will be replaced.
 rm /Library/LaunchDaemons/org.macports.mysql55-server.plist
+rm /Library/LaunchDaemons/org.macports.mariadb-server.plist 
 
-# Start with MySQL server.
-port install mysql55-server
+# Start with MySQL server. The -N flag loads defaults instead of prompting.
+port -N install mariadb-server
 
-mv /opt/local/etc/mysql55/my.cnf /opt/local/etc/mysql55/my.cnf.disabled
-echo "Disabled my.cnf in /optlocal/etc/mysql55/my.cnf; please use /etc/my.cnf"
+if [ -e /opt/local/etc/mysql55/my.cnf ]; then
+  mv /opt/local/etc/mysql55/my.cnf /opt/local/etc/mysql55/my.cnf.disabled
+  echo "Disabled my.cnf in /opt/local/etc/mysql55/my.cnf; please use /etc/my.cnf"
+fi
+
+DATESTRING=`date +"%y%m%d%H%M"`
+if [ -e /etc/my.cnf ]; then
+  mv /etc/my.cnf /etc/my.cnf.$DATESTRING
+  echo "Backed up /etc/my.cnf to /etc/my.cnf.$DATESTRING"
+fi
+if [ ! -e ./my.cnf ]; then
+  echo "Could not find my.cnf source."
+  if [ "${PWD##*/}" != "macports-lamp" ]; then
+    echo "Please cd into macports-lamp directory before running."
+    exit 1
+  fi
+else
+  cp ./my.cnf /etc/my.cnf
+fi
 
 # Create initial databases.
-sudo -u _mysql /opt/local/lib/mysql55/bin/mysql_install_db
+sudo -u _mysql /opt/local/lib/mariadb/bin/mysql_install_db
 
 # Map mysql command-line binaries to the version we are installing.
-port select mysql mysql55
+port select mysql mariadb
+
+# Port install may have loaded already.
+port unload mariadb-server > /dev/null 2>&1
 
 # Start MySQL.
-port load mysql55-server
+port -d load mariadb-server
+
+echo
+echo
+echo "Please enter the root password you'd like to use for MariaDB:"
+read -s ROOTPW
+
+/opt/local/lib/mariadb/bin/mysqladmin -u root password "$ROOTPW"
 
 # Need enough time for tablespace creation or expect will not connect.
-echo "Waiting 30 seconds for tablespace creation"
-sleep 30
+echo "Waiting 20 seconds for tablespace creation"
+echo
+echo "NOTE:"
+echo "The script below will appear to be asking you questions, but just wait..."
+echo "...they will be automatically answered."
+sleep 20
 
-echo ""
+echo
 echo "If the following fails, you will need to run mysql_secure_installation"
 echo "by hand after the script completes."
-echo ""
+echo
+echo "Ignore the following error:"
+echo "/opt/local/lib/mariadb/bin/mysql_secure_installation: line 393: find_mysql_client: command not found"
+echo
+echo
 
 # Expect is not always working as, heh heh, expected. If 
 # mysql_secure_installation fails, it can be run after the script completes.
 # A heredoc for expect that automatically answers the questions.
 expect -- << EOF
-spawn mysql_secure_installation
+spawn /opt/local/lib/mariadb/bin/mysql_secure_installation
 expect "Enter current password for root (enter for none):"
-send "\r"
+send "$ROOTPW\r"
 	
 expect "Set root password?"
-send "y\r"
-
-expect "New password:"
-send "password\r"
-
-expect "Re-enter new password:"
-send "password\r"
+send "n\r"
 
 expect "Remove anonymous users?"
 send "y\r"
@@ -57,12 +87,20 @@ expect "Reload privilege tables now?"
 send "y\r"
 EOF
 
+# Path to mariadb binaries like 'mysql'
+grep -qF 'PATH=$PATH:/opt/local/lib/mariadb/bin' ~/.bash_profile || echo 'PATH=$PATH:/opt/local/lib/mariadb/bin' >> ~/.bash_profile
+
 echo
-echo "MySQL should now be installed."
+echo "MariaDB should now be installed. Open a new Terminal so the newly updated"
+echo '$PATH will be used, which includes the mysql binaries at /opt/local/lib/mariadb/bin'
 echo
-echo "If you want it to start at startup, type:"
-echo "sudo launchctl load -w /Library/LaunchDaemons/org.macports.mysql55-server.plist"
+echo "MariaDB will launch automatically at startup. If you don't want this type:"
+echo "sudo launchctl unload -w /Library/LaunchDaemons/org.macports.mariadb-server.plist"
+echo 
+echo "And if you change your mind and want to load it at startup, type:"
+echo "sudo launchctl load -w /Library/LaunchDaemons/org.macports.mariadb-server.plist"
 echo
+echo "-----"
 echo "If you cannot get into MySQL you can reset the root password by"
 echo "starting it manually:"
 echo
@@ -73,4 +111,8 @@ echo
 echo "USE mysql;"
 echo "UPDATE user SET password=PASSWORD('foo') WHERE User='root';"
 echo "FLUSH PRIVILEGES;"
+echo "-----"
+echo
+echo "MariaDB connections are available through the following local socket:"
+echo "/opt/local/var/run/mariadb/mysqld.sock"
 echo
