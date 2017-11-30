@@ -6,6 +6,7 @@ if [ -z $SUDO_USER ]; then
   echo "sudo ./build_lamp"
   exit 1
 fi
+DATESTRING=`date +"%y%m%d%H%M"`
 
 PORTFOUND=$(type -P port)
 if [ "$PORTFOUND" == "" ]; then
@@ -22,22 +23,39 @@ rm /Library/LaunchDaemons/org.macports.apache2.plist
 rm /Library/LaunchDaemons/org.macports.slapd.plist
 
 # Install apache2 and friends.
-port install apache2
-port install php56-apache2handler
-port install php56-gd php56-ldap php56-mbstring php56-mcrypt php56-mysql php56-pear php56-opcache
-port install php56-iconv php56-xdebug php56-openssl
-port install php56-curl
-port install pear-PEAR
+port -N install apache2
+port -N install php56-apache2handler
+port -N install php56-gd php56-ldap php56-mbstring php56-mcrypt php56-mysql php56-pear php56-opcache
+port -N install php56-iconv php56-xdebug php56-openssl
+port -N install php56-curl
+port -N install pear-PEAR
 /opt/local/bin/apxs -a -e -n php5 mod_php56.so
 chown $SUDO_USER ~/.pearrc
 
-defSock='/opt/local/var/run/mysql55/mysqld.sock'
+# Move MacPorts Python application out of the way to prevent stoppage.
+mv /Applications/MacPorts/Python\ 2.7 /Applications/MacPorts/Python\ 2.7.$DATESTRING
+
+# Install PHP 7 but do not make it the default.
+port -N install php70-apache2handler
+port -N install php70-gd php70-ldap php70-mbstring php70-mcrypt php70-mysql php70-pear php70-opcache
+port -N install php70-iconv php70-xdebug php70-openssl
+port -N install php70-curl
+
+
+defSock='/opt/local/var/run/mariadb/mysqld.sock'
 cat /opt/local/etc/php56/php.ini-development | sed \
   -e "s#pdo_mysql\.default_socket.*#pdo_mysql\.default_socket=${defSock}#" \
   -e "s#mysql\.default_socket.*#mysql\.default_socket=${defSock}#" \
   -e "s#mysqli\.default_socket.*#mysqli\.default_socket=${defSock}#" > /opt/local/etc/php56/php.ini
 echo "date.timezone = 'America/Chicago'" >> /opt/local/etc/php56/php.ini
 echo "error_log = /var/log/php.log" >> /opt/local/etc/php56/php.ini
+
+cat /opt/local/etc/php70/php.ini-development | sed \
+  -e "s#pdo_mysql\.default_socket.*#pdo_mysql\.default_socket=${defSock}#" \
+  -e "s#mysql\.default_socket.*#mysql\.default_socket=${defSock}#" \
+  -e "s#mysqli\.default_socket.*#mysqli\.default_socket=${defSock}#" > /opt/local/etc/php70/php.ini
+echo "date.timezone = 'America/Chicago'" >> /opt/local/etc/php70/php.ini
+echo "error_log = /var/log/php.log" >> /opt/local/etc/php70/php.ini
 
 # PHP will log errors to /var/log/php.log.
 touch /var/log/php.log
@@ -49,8 +67,17 @@ if [ -e /opt/local/etc/apache2/extra/httpd-vhosts.conf ]; then
 fi
 
 # Websites will live in ~/Sites.
-mkdir -p ~/Sites
-chown $SUDO_USER ~/Sites
+WWWROOT=/Users/$SUDO_USER/Sites
+mkdir -p $WWWROOT
+chown $SUDO_USER $WWWROOT
+
+# Change default DocumentRoot to ~/Sites
+# Don't do this. It is not necessary because we create a vhost instead.
+#sed -i '' -e "'s_/opt/local/www/apache2/html_${WWWROOT}_'" /opt/local/etc/apache2/httpd.conf
+
+# Provide default document that explains what is happening instead of MacPorts
+# default "It Works!" page.
+sh -c "echo '<html><body><p>You have reached the MacPorts default virtualhost. Try changing the hostname of your request to http://local.test/</p></body></html>' > /opt/local/www/apache2/html/index.html"
 
 FQHN=$(hostname)
 echo "127.0.0.1 local.test" >> /etc/hosts
@@ -64,8 +91,7 @@ echo "    DocumentRoot "$HOME/Sites"" >> /opt/local/etc/apache2/extra/httpd-vhos
 echo "    <Directory "$HOME/Sites">" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
 echo "      Options Indexes FollowSymLinks" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
 echo "      DirectoryIndex index.php index.html" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
-echo "      Require ip 127.0.0.1 $MYIP" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
-echo "      Deny from all" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "      Require local" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
 echo "      AllowOverride All" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
 echo "    </Directory>" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
 echo "</VirtualHost>" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
@@ -89,8 +115,23 @@ echo 'ta() { tail -f /opt/local/var/log/apache2/access_log; }' >> ~/.bash_profil
 echo 'tp() { tail -f /var/log/php.log; }' >> ~/.bash_profile
 echo "alias acr='sudo port unload apache2;sudo port load apache2'" >> ~/.bash_profile
 echo
-echo "MySQL was not installed. To install, run separate script build_mysql."
+echo "MariaDB was not installed. To install, run separate script build_mysql."
 echo "Complete. Open a new Terminal window for profile settings to take effect."
+echo
+echo "Both PHP 5.6 and PHP 7.0 have been installed. PHP 5.6 is selected already."
+echo "To switch back and forth:"
+echo
+echo "Switch to PHP 5.6:"
+echo "sudo port select php php56"
+echo "sudo /opt/local/bin/apxs -A -e -n php7 mod_php70.so"
+echo "sudo /opt/local/bin/apxs -a -e -n php5 mod_php56.so"
+echo "acr"
+echo
+echo "Switch to PHP 7.0:"
+echo "sudo port select php php70"
+echo "sudo /opt/local/bin/apxs -A -e -n php5 mod_php56.so"
+echo "sudo /opt/local/bin/apxs -a -e -n php7 mod_php70.so"
+echo "acr"
 echo
 echo 'Note that if MacPorts put its $PATH modification code into .profile then'
 echo ".bash_profile will not be run."
