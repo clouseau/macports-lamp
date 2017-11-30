@@ -10,11 +10,10 @@ Please read this README all the way through before beginning.
 
 Why
 ---
-MacPorts is powerful but finicky. I commonly end up with MySQL (I know, we're
-all switching to MariaDB soon) with the wrong permissions and other little
-niggling trouble. Therefore this script, which will reliably install MySQL 5.5
-and PHP 5.6 plus Apache 2.4 on OS X. At least, for me. Tested with MacPorts 
-2.4.2 on OS X 10.13.
+MacPorts is powerful but finicky. I commonly end up with MySQL/MariaDB with
+the wrong permissions and other annoyances. Therefore this script, which will
+reliably install MariaDB 5.5 and PHP 5.6 plus Apache 2.4 on OS X. At least,
+for me. Tested with MacPorts 2.4.2 on OS X 10.13.
 
 Prerequisites
 -------------
@@ -28,19 +27,19 @@ sudo xcodebuild -license
 xcode-select --install
 ```
 
-Create a my.cnf and put it at /etc/my.cnf. You could use the [Percona Wizard](https://tools.percona.com/wizard).
+macports-lamp comes with a my.cnf file for MariaDB that it will place at
+/etc/my.cnf. If you already had a my.cnf there it will be moved out of the way.
 
-Ensure that /etc/my.cnf has a line for the socket MacPorts will use:
+MariaDB will use the following socket:
 
 ```
-socket		= /opt/local/var/run/mysql55/mysqld.sock
+socket		= /opt/local/var/run/mariadb/mysqld.sock
 ```
 
 Read Through the Script
 -----------------------
 
-Note that it will set your MySQL root password to "password" unless you
-change this in the expect heredoc (ca. lines 36, 39 of the build_mysql script).
+You will be prompted for the root password that you want to use with MariaDB.
 
 Default Virtual Host
 --------------------
@@ -55,7 +54,7 @@ going to http://local.test/ after the script completes.
     <Directory /Users/username/Sites>
       Options Indexes FollowSymLinks
       DirectoryIndex index.php index.html
-      Require ip 127.0.0.1
+      Require local
       AllowOverride All
     </Directory>
 </VirtualHost>
@@ -64,14 +63,14 @@ going to http://local.test/ after the script completes.
 Shortcuts
 ---------
 
-The following functions will be installed in ~/.profile. I find them useful
+The following functions will be installed in ~/.bash_profile. I find them useful
 at the command line:
 
 ```
 te - tail Apache error log
 ta - tail Apache access log
 tp - tail PHP error log
-acr - apachectl restart
+acr - apachectl restart (really sudo port unload apache2;sudo port load apache2)
 ```
 
 Running the Scripts
@@ -82,12 +81,36 @@ sudo ./build_lamp
 sudo ./build_mysql
 ```
 
+One of the PHP 7 ports has a dependency on Python; thus MacPorts will install
+Python 2.7. If you would like to make this the default version of python that
+runs when you run python scripts (recommended), tell MacPorts that with
+
+```
+sudo port select --set python python27
+```
+
+Switching between PHP 5.6 and PHP 7.0:
+
+Switch to PHP 5.6 (default after installation):
+```
+sudo port select php php56
+sudo /opt/local/bin/apxs -A -e -n php7 mod_php70.so
+sudo /opt/local/bin/apxs -a -e -n php5 mod_php56.so
+acr
+```
+
+Switch to PHP 7.0:
+```sudo port select php php70
+sudo /opt/local/bin/apxs -A -e -n php5 mod_php56.so
+sudo /opt/local/bin/apxs -a -e -n php7 mod_php70.so
+acr
+
+```
+
 Drush
 -----
 
-The install_drush script is now a historical footnote and should not be used.
-
-Instead: http://docs.drush.org/en/master/install/
+To install Drush, see http://docs.drush.org/en/master/install/
 
 Reference
 ---------
