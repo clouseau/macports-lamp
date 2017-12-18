@@ -30,6 +30,7 @@ port -N install php56-iconv php56-xdebug php56-openssl
 port -N install php56-curl
 port -N install pear-PEAR
 /opt/local/bin/apxs -a -e -n php5 mod_php56.so
+/opt/local/bin/apxs -a -e -n rewrite mod_rewrite.so
 chown $SUDO_USER ~/.pearrc
 
 # Move MacPorts Python application out of the way to prevent stoppage.
