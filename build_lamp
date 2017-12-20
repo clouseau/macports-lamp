@@ -62,10 +62,16 @@ echo "error_log = /var/log/php.log" >> /opt/local/etc/php70/php.ini
 touch /var/log/php.log
 chown _www /var/log/php.log
 
+# If user has existing httpd.conf, httpd-vhosts.conf and httpd-default.conf back them up.
 cp /opt/local/etc/apache2/httpd.conf /opt/local/etc/apache2/httpd.conf.bak
 if [ -e /opt/local/etc/apache2/extra/httpd-vhosts.conf ]; then
   cp /opt/local/etc/apache2/extra/httpd-vhosts.conf /opt/local/etc/apache2/extra/httpd-vhosts.conf.bak
 fi
+if [ -e /opt/local/etc/apache2/extra/httpd-default.conf ]; then
+  cp /opt/local/etc/apache2/extra/httpd-default.conf /opt/local/etc/apache2/extra/httpd-default.conf.bak
+fi
+# Enable defaults.
+cp /opt/local/etc/apache2/extra/httpd-default.conf.orig /opt/local/etc/apache2/extra/httpd-default.conf
 
 # Websites will live in ~/Sites.
 WWWROOT=/Users/$SUDO_USER/Sites
