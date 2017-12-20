@@ -52,11 +52,6 @@ MariaDB will use the following socket:
 socket		= /opt/local/var/run/mariadb/mysqld.sock
 ```
 
-Read Through the Script
------------------------
-
-You will be prompted for the root password that you want to use with MariaDB.
-
 Default Virtual Host
 --------------------
 
