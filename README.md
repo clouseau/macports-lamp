@@ -20,7 +20,8 @@ Prerequisites
 If you had installed macports-lamp previously, export any MySQL databases
 (since macports-lamp will install a clean 'n' fresh MariaDB).
 
-Stop any running MacPorts services, e.g.,
+Stop any running MacPorts services as in the following two examples. If 
+these give you errors, just continue.
 
 ```
 sudo port unload apache2
