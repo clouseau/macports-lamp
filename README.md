@@ -18,8 +18,16 @@ for me. Tested with MacPorts 2.4.2 on OS X 10.13.
 Prerequisites
 -------------
 If you had installed macports-lamp previously, export any MySQL databases
-(since macports-lamp will install a clean 'n' fresh MariaDB) and move the
-old MacPorts installation out the way.
+(since macports-lamp will install a clean 'n' fresh MariaDB).
+
+Stop any running MacPorts services, e.g.,
+
+```
+sudo port unload apache2
+sudo port unload mysql55-server
+```
+
+Move the old MacPorts installation out the way.
 
 ```
 sudo mv /opt/local /opt/local.old
