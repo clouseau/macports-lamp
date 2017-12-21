@@ -50,6 +50,9 @@ cat /opt/local/etc/php56/php.ini-development | sed \
   -e "s#mysqli\.default_socket.*#mysqli\.default_socket=${defSock}#" > /opt/local/etc/php56/php.ini
 echo "date.timezone = 'America/Chicago'" >> /opt/local/etc/php56/php.ini
 echo "error_log = /var/log/php.log" >> /opt/local/etc/php56/php.ini
+echo "xdebug.profiler_output_dir = '/tmp'" >> /opt/local/etc/php56/php.ini
+echo "xdebug.profiler_enable = 1" >> /opt/local/etc/php56/php.ini
+echo "xdebug.remote_enable = 1" >> /opt/local/etc/php56/php.ini
 
 cat /opt/local/etc/php70/php.ini-development | sed \
   -e "s#pdo_mysql\.default_socket.*#pdo_mysql\.default_socket=${defSock}#" \
@@ -57,6 +60,9 @@ cat /opt/local/etc/php70/php.ini-development | sed \
   -e "s#mysqli\.default_socket.*#mysqli\.default_socket=${defSock}#" > /opt/local/etc/php70/php.ini
 echo "date.timezone = 'America/Chicago'" >> /opt/local/etc/php70/php.ini
 echo "error_log = /var/log/php.log" >> /opt/local/etc/php70/php.ini
+echo "xdebug.profiler_output_dir = '/tmp'" >> /opt/local/etc/php70/php.ini
+echo "xdebug.profiler_enable = 1" >> /opt/local/etc/php70/php.ini
+echo "xdebug.remote_enable = 1" >> /opt/local/etc/php70/php.ini
 
 # PHP will log errors to /var/log/php.log.
 touch /var/log/php.log
