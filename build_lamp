@@ -53,6 +53,11 @@ echo "error_log = /var/log/php.log" >> /opt/local/etc/php56/php.ini
 echo "xdebug.profiler_output_dir = '/tmp'" >> /opt/local/etc/php56/php.ini
 echo "xdebug.profiler_enable = 1" >> /opt/local/etc/php56/php.ini
 echo "xdebug.remote_enable = 1" >> /opt/local/etc/php56/php.ini
+# Increase memory limit to 1024M
+sed -Ei '' 's/(memory_limit = )[0-9]+M/\11024M/g' /opt/local/etc/php56/php.ini
+# Increase file upload size to 34M
+sed -Ei '' 's/(upload_max_filesize = )[0-9]+M/\134M/g' /opt/local/etc/php56/php.ini
+sed -Ei '' 's/(post_max_size = )[0-9]+M/\134M/g' /opt/local/etc/php56/php.ini
 
 cat /opt/local/etc/php70/php.ini-development | sed \
   -e "s#pdo_mysql\.default_socket.*#pdo_mysql\.default_socket=${defSock}#" \
@@ -63,6 +68,11 @@ echo "error_log = /var/log/php.log" >> /opt/local/etc/php70/php.ini
 echo "xdebug.profiler_output_dir = '/tmp'" >> /opt/local/etc/php70/php.ini
 echo "xdebug.profiler_enable = 1" >> /opt/local/etc/php70/php.ini
 echo "xdebug.remote_enable = 1" >> /opt/local/etc/php70/php.ini
+# Increase memory limit to 1024M
+sed -Ei '' 's/(memory_limit = )[0-9]+M/\11024M/g' /opt/local/etc/php70/php.ini
+# Increase file upload size to 34M
+sed -Ei '' 's/(upload_max_filesize = )[0-9]+M/\134M/g' /opt/local/etc/php70/php.ini
+sed -Ei '' 's/(post_max_size = )[0-9]+M/\134M/g' /opt/local/etc/php70/php.ini
 
 # PHP will log errors to /var/log/php.log.
 touch /var/log/php.log
