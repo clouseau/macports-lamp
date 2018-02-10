@@ -28,7 +28,7 @@ sudo port unload apache2
 sudo port unload mysql55-server
 ```
 
-Move the old MacPorts installation out the way.
+Move the old MacPorts installation out of the way.
 
 ```
 sudo mv /opt/local /opt/local.old
@@ -90,6 +90,7 @@ Running the Scripts
 ```
 sudo ./build_lamp
 sudo ./build_mysql
+sudo ./increase_limits
 ```
 
 One of the PHP 7 ports has a dependency on Python; thus MacPorts will install
@@ -129,3 +130,4 @@ https://trac.macports.org/wiki/howto/MAMP
 
 http://aaronbonner.io/post/44973182283/a-guide-to-php-mysql-and-nginx-on-macports
 
+https://unix.stackexchange.com/questions/108174/how-to-persistently-control-maximum-system-resource-consumption-on-mac/221988
