@@ -28,6 +28,7 @@ port -N install php56-apache2handler
 port -N install php56-gd php56-ldap php56-mbstring php56-mcrypt php56-mysql php56-pear php56-opcache
 port -N install php56-iconv php56-xdebug php56-openssl
 port -N install php56-curl
+port -N install php56-gmp
 port -N install pear-PEAR
 /opt/local/bin/apxs -a -e -n php5 mod_php56.so
 /opt/local/bin/apxs -a -e -n rewrite mod_rewrite.so
@@ -41,6 +42,7 @@ port -N install php72-apache2handler
 port -N install php72-gd php72-ldap php72-mbstring php72-mcrypt php72-mysql php72-pear php72-opcache
 port -N install php72-iconv php72-xdebug php72-openssl
 port -N install php72-curl
+port -N install php72-gmp
 
 
 defSock='/opt/local/var/run/mariadb/mysqld.sock'
