@@ -7,11 +7,21 @@ if [ -z $SUDO_USER ]; then
   exit 1
 fi
 
-echo
 echo "Your current limits:"
 launchctl limit | grep max
+
+if [[ `csrutil status` == 'System Integrity Protection status: enabled.' ]]; then
+  echo
+  echo "Noting that System Integrity Protection (SIP) is enabled."
+  echo "You should not need to disable it for limits changes to take effect."
+  echo
+fi
+
 echo
-echo "Would you like to set maxproc to 2048 and maxfiles to 196608?"
+echo "Your current maxfiles limits (soft limit on the left, hard limit on the right):"
+launchctl limit | grep maxfiles
+echo
+echo "Would you like to set maxfiles to 10240?"
 read -p "Are you sure? (y/n) " -n 1 -r
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -19,6 +29,20 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   chown root:wheel /Library/LaunchDaemons/limit.maxfiles.plist
   chmod 644 /Library/LaunchDaemons/limit.maxfiles.plist
   
+  echo
+  echo "New maxfiles limits have been set. A reboot will be required for them to take effect."
+else
+  echo
+  echo "Action aborted. maxfiles limit settings have not been changed."
+fi
+
+echo
+echo "Your current maxproc limits (soft limit on the left, hard limit on the right):"
+launchctl limit | grep maxproc
+echo "Would you like to set maxproc to 2048? (Only do this if your soft limit is less than 2048.)"
+read -p "Are you sure? (y/n) " -n 1 -r
+
+if [[ $REPLY =~ ^[Yy]$ ]]; then
   cp ./limit.maxproc.plist /Library/LaunchDaemons/limit.maxproc.plist
   chown root:wheel /Library/LaunchDaemons/limit.maxproc.plist
   chmod 644 /Library/LaunchDaemons/limit.maxproc.plist
@@ -27,7 +51,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "New limits have been set. A reboot will be required for them to take effect."
 else
   echo
-  echo "Action aborted. No settings have been changed."
+  echo "Action aborted. maxproc limit settings have not been changed."
 fi
 
 
