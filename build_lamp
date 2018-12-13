@@ -25,7 +25,15 @@ rm /Library/LaunchDaemons/org.macports.slapd.plist
 # Install apache2 and friends.
 port -N install apache2
 port -N install php56-apache2handler
-port -N install php56-gd php56-ldap php56-mbstring php56-mcrypt php56-mysql php56-pear php56-opcache
+port -N install php56-gd php56-ldap php56-mbstring php56-mcrypt php56-mysql php56-pear
+case "$OSTYPE" in
+  darwin18)
+    echo "Skipping php56-opcache as it is broken on Mojave"
+    ;;
+  *)
+    port -N install php56-opcache
+    ;;
+esac
 port -N install php56-iconv php56-xdebug php56-openssl
 port -N install php56-curl
 port -N install pear-PEAR
