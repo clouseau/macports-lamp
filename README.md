@@ -12,8 +12,8 @@ Why
 ---
 MacPorts is powerful but finicky. I commonly end up with MySQL/MariaDB with
 the wrong permissions and other annoyances. Therefore this script, which will
-reliably install MariaDB 5.5 and PHP 5.6 plus Apache 2.4 on OS X. At least,
-for me. Tested with MacPorts 2.4.2 on OS X 10.13.
+reliably install MariaDB 5.5 and PHP 5.6 and 7.2 plus Apache 2.4 on OS X. 
+At least, for me. Tested with MacPorts 2.5.4 on OS X 10.14.
 
 Prerequisites
 -------------
@@ -28,7 +28,9 @@ sudo port unload apache2
 sudo port unload mysql55-server
 ```
 
-Move the old MacPorts installation out of the way.
+Move/rename /Applications/MacPorts.
+
+Move the old MacPorts installation in /opt out of the way.
 
 ```
 sudo mv /opt/local /opt/local.old
@@ -101,7 +103,7 @@ runs when you run python scripts (recommended), tell MacPorts that with
 sudo port select --set python python27
 ```
 
-Switching between PHP 5.6 and PHP 7.0:
+Switching between PHP 5.6 and PHP 7.2:
 
 Switch to PHP 5.6 (default after installation):
 ```
