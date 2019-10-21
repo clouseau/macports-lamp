@@ -25,7 +25,7 @@ these give you errors, just continue.
 
 ```
 sudo port unload apache2
-sudo port unload mysql55-server
+sudo port unload mariadb-server
 ```
 
 Move/rename /Applications/MacPorts.
