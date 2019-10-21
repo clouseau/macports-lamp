@@ -1,9 +1,9 @@
 macports-lamp
 =============
 
-Builds a LAMP (MAMP) stack on macOS 10.13 High Sierra using MacPorts.
+Builds a LAMP (MAMP) stack on macOS 10.14 Mojave using MacPorts.
 
-Intended to be used on a fresh 10.13 install. For previous versions of macOS
+Intended to be used on a fresh 10.14 install. For versions of macOS before 10.13
 use the pre-high-sierra branch.
 
 Please read this README all the way through before beginning.
