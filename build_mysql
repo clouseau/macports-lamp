@@ -104,7 +104,7 @@ echo "-----"
 echo "If you cannot get into MySQL you can reset the root password by"
 echo "starting it manually:"
 echo
-echo "sudo -u _mysql /opt/local/lib/mysql55/bin/mysqld --user=_mysql --skip-grant-tables"
+echo "sudo -u _mysql /opt/local/lib/mariadb/bin/mysqld --user=_mysql --skip-grant-tables"
 echo
 echo "Then type mysql at the command line and set the root password:"
 echo
