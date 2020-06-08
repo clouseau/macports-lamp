@@ -51,6 +51,11 @@ port -N install php72-gd php72-ldap php72-mbstring php72-mcrypt php72-mysql php7
 port -N install php72-iconv php72-xdebug php72-openssl
 port -N install php72-curl
 port -N install php72-gmp
+port -N install php73-apache2handler
+port -N install php73-gd php73-ldap php73-mbstring php73-mcrypt php73-mysql php73-opcache
+port -N install php73-iconv php73-xdebug php73-openssl
+port -N install php73-curl
+port -N install php73-gmp
 
 
 defSock='/opt/local/var/run/mariadb/mysqld.sock'
@@ -83,6 +88,22 @@ sed -Ei '' 's/(memory_limit = )[0-9]+M/\11024M/g' /opt/local/etc/php72/php.ini
 # Increase file upload size to 34M
 sed -Ei '' 's/(upload_max_filesize = )[0-9]+M/\134M/g' /opt/local/etc/php72/php.ini
 sed -Ei '' 's/(post_max_size = )[0-9]+M/\134M/g' /opt/local/etc/php72/php.ini
+
+cat /opt/local/etc/php73/php.ini-development | sed \
+  -e "s#pdo_mysql\.default_socket.*#pdo_mysql\.default_socket=${defSock}#" \
+  -e "s#mysql\.default_socket.*#mysql\.default_socket=${defSock}#" \
+  -e "s#mysqli\.default_socket.*#mysqli\.default_socket=${defSock}#" > /opt/local/etc/php73/php.ini
+echo "date.timezone = 'America/Chicago'" >> /opt/local/etc/php73/php.ini
+echo "error_log = /var/log/php.log" >> /opt/local/etc/php73/php.ini
+echo "xdebug.profiler_output_dir = '/tmp'" >> /opt/local/etc/php73/php.ini
+echo "xdebug.profiler_enable = 1" >> /opt/local/etc/php73/php.ini
+echo "xdebug.remote_enable = 1" >> /opt/local/etc/php73/php.ini
+# Increase memory limit to 1024M
+sed -Ei '' 's/(memory_limit = )[0-9]+M/\11024M/g' /opt/local/etc/php73/php.ini
+# Increase file upload size to 34M
+sed -Ei '' 's/(upload_max_filesize = )[0-9]+M/\134M/g' /opt/local/etc/php73/php.ini
+sed -Ei '' 's/(post_max_size = )[0-9]+M/\134M/g' /opt/local/etc/php73/php.ini
+
 
 # PHP will log errors to /var/log/php.log.
 touch /var/log/php.log
