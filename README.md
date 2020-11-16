@@ -118,7 +118,7 @@ Switch to PHP 7.2:
 ```
 sudo port select php php72
 sudo /opt/local/bin/apxs -A -e -n php5 mod_php56.so
-sudo /opt/local/bin/apxs -A -e -n php7 mod_php72.so
+sudo /opt/local/bin/apxs -A -e -n php7 mod_php73.so
 sudo /opt/local/bin/apxs -a -e -n php7 mod_php72.so
 acr
 
