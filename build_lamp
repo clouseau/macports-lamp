@@ -37,10 +37,8 @@ esac
 port -N install php56-iconv php56-xdebug php56-openssl
 port -N install php56-curl
 port -N install php56-gmp
-port -N install pear-PEAR
 /opt/local/bin/apxs -a -e -n php5 mod_php56.so
 /opt/local/bin/apxs -a -e -n rewrite mod_rewrite.so
-chown $SUDO_USER ~/.pearrc
 
 # Move MacPorts Python application out of the way to prevent stoppage.
 mv /Applications/MacPorts/Python\ 2.7 /Applications/MacPorts/Python\ 2.7.$DATESTRING
@@ -58,7 +56,7 @@ port -N install php73-curl
 port -N install php73-gmp
 
 
-defSock='/opt/local/var/run/mariadb/mysqld.sock'
+defSock='/opt/local/var/run/mysql57/mysqld.sock'
 cat /opt/local/etc/php56/php.ini-development | sed \
   -e "s#pdo_mysql\.default_socket.*#pdo_mysql\.default_socket=${defSock}#" \
   -e "s#mysql\.default_socket.*#mysql\.default_socket=${defSock}#" \
