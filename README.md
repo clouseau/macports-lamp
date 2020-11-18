@@ -1,24 +1,24 @@
 macports-lamp
 =============
 
-Builds a LAMP (MAMP) stack on macOS 10.14 Mojave using MacPorts.
+Builds a LAMP (MAMP) stack on macOS 10.15 Catalina using MacPorts.
 
-Intended to be used on a fresh 10.14 install. For versions of macOS before 10.13
+Intended to be used on a fresh 10.15 install. For versions of macOS before 10.13
 use the pre-high-sierra branch.
 
 Please read this README all the way through before beginning.
 
 Why
 ---
-MacPorts is powerful but finicky. I commonly end up with MySQL/MariaDB with
+MacPorts is powerful but finicky. I commonly end up with MySQL with
 the wrong permissions and other annoyances. Therefore this script, which will
-reliably install MariaDB 5.5 and PHP 5.6 and 7.2/7.3 plus Apache 2.4 on OS X. 
-At least, for me. Tested with MacPorts 2.5.4 on OS X 10.14.
+reliably install MariaDB 5.7 and PHP 5.6 and 7.2/7.3 plus Apache 2.4 on OS X. 
+At least, for me. Tested with MacPorts 2.6.4 on OS X 10.15.
 
 Prerequisites
 -------------
 If you had installed macports-lamp previously, export any MySQL databases
-(since macports-lamp will install a clean 'n' fresh MariaDB).
+(since macports-lamp will install a clean 'n' fresh MySQL).
 
 Stop any running MacPorts services as in the following two examples. If 
 these give you errors, just continue.
@@ -45,13 +45,13 @@ sudo xcodebuild -license
 xcode-select --install
 ```
 
-macports-lamp comes with a my.cnf file for MariaDB that it will place at
+macports-lamp comes with a my.cnf file for MySQL 5.7 that it will place at
 /etc/my.cnf. If you already had a my.cnf there it will be moved out of the way.
 
-MariaDB will use the following socket:
+MySQL 5.7 will use the following socket:
 
 ```
-socket		= /opt/local/var/run/mariadb/mysqld.sock
+socket		= /opt/local/var/run/mysql57/mysqld.sock
 ```
 
 Default Virtual Host
@@ -146,3 +146,5 @@ https://trac.macports.org/wiki/howto/MAMP
 http://aaronbonner.io/post/44973182283/a-guide-to-php-mysql-and-nginx-on-macports
 
 https://unix.stackexchange.com/questions/108174/how-to-persistently-control-maximum-system-resource-consumption-on-mac/221988
+
+https://bertvv.github.io/notes-to-self/2015/11/16/automating-mysql_secure_installation/
