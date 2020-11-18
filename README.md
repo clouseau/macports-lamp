@@ -3,8 +3,13 @@ macports-lamp
 
 Builds a LAMP (MAMP) stack on macOS 10.15 Catalina using MacPorts.
 
-Intended to be used on a fresh 10.15 install. For versions of macOS before 10.13
-use the pre-high-sierra branch.
+Intended to be used on a fresh 10.15 install. 
+
+The main branch supports MySQL 5.7.
+
+The mariadb55 branch supports MariaDB 5.5.
+
+For versions of macOS before 10.13 use the pre-high-sierra branch.
 
 Please read this README all the way through before beginning.
 
