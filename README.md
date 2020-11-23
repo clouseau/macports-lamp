@@ -35,7 +35,7 @@ sudo port unload mariadb-server
 
 Move/rename /Applications/MacPorts.
 
-Move the old MacPorts installation in /opt out of the way.
+Move the old MacPorts installation in /opt out of the way. If you have System Integrity Protection enabled, you will need to [disable it first](https://developer.apple.com/documentation/security/disabling_and_enabling_system_integrity_protection).
 
 ```
 sudo mv /opt/local /opt/local.old
@@ -138,6 +138,8 @@ sudo /opt/local/bin/apxs -a -e -n php7 mod_php73.so
 acr
 
 ```
+
+If you disabled System Integrity Protection earlier, don't forget to [reenable it](https://developer.apple.com/documentation/security/disabling_and_enabling_system_integrity_protection). You can check if it is enabled by typing `csrutil status` in Terminal.
 
 Drush
 -----
