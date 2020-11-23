@@ -170,7 +170,7 @@ echo 'ta() { tail -f /opt/local/var/log/apache2/access_log; }' >> ~/.bash_profil
 echo 'tp() { tail -f /var/log/php.log; }' >> ~/.bash_profile
 echo "alias acr='sudo port unload apache2;sudo port load apache2'" >> ~/.bash_profile
 echo
-echo "MariaDB was not installed. To install, run separate script build_mysql."
+echo "MySQL was not installed. To install, run separate script build_mysql."
 echo "Complete. Open a new Terminal window for profile settings to take effect."
 echo
 echo "Both PHP 5.6 and PHP 7.2 have been installed. PHP 5.6 is selected already."
