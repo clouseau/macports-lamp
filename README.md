@@ -108,25 +108,15 @@ runs when you run python scripts (recommended), tell MacPorts that with
 sudo port select --set python python27
 ```
 
-Switching between PHP 5.6 and PHP 7.2:
+Switching between PHP 5.6 and PHP 7.3:
 
-Switch to PHP 5.6 (default after installation):
+Switch to PHP 5.6:
 ```
 sudo port select php php56
 sudo /opt/local/bin/apxs -A -e -n php7 mod_php72.so
 sudo /opt/local/bin/apxs -A -e -n php7 mod_php73.so
 sudo /opt/local/bin/apxs -a -e -n php5 mod_php56.so
 acr
-```
-
-Switch to PHP 7.2:
-```
-sudo port select php php72
-sudo /opt/local/bin/apxs -A -e -n php5 mod_php56.so
-sudo /opt/local/bin/apxs -A -e -n php7 mod_php73.so
-sudo /opt/local/bin/apxs -a -e -n php7 mod_php72.so
-acr
-
 ```
 
 Switch to PHP 7.3:
@@ -140,6 +130,18 @@ acr
 ```
 
 If you disabled System Integrity Protection earlier, don't forget to [reenable it](https://developer.apple.com/documentation/security/disabling_and_enabling_system_integrity_protection). You can check if it is enabled by typing `csrutil status` in Terminal.
+
+Troubleshooting
+---------------
+
+If the MySQL installation messed up somehow, and you want to try it again, use the following to clean up and retry:
+
+```
+sudo port unload mysql57-server
+sudo port uninstall mysql57-server
+sudo rm -rf /opt/local/var/db/mysql57/
+sudo ./build_mysql 
+```
 
 Drush
 -----
