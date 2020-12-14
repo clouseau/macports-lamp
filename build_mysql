@@ -24,14 +24,14 @@ if [ -e /etc/my.cnf ]; then
   mv /etc/my.cnf /etc/my.cnf.$DATESTRING
   echo "Backed up /etc/my.cnf to /etc/my.cnf.$DATESTRING"
 fi
-if [ ! -e ./mysql57-my.cnf ]; then
+if [ ! -e ./my.cnf ]; then
   echo "Could not find my.cnf source."
   if [ "${PWD##*/}" != "macports-lamp" ]; then
     echo "Please cd into macports-lamp directory before running."
     exit 1
   fi
 else
-  cp ./mysql57-my.cnf /etc/my.cnf
+  cp ./my.cnf /etc/my.cnf
 fi
 
 # Create initial databases.
