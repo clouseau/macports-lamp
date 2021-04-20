@@ -44,11 +44,6 @@ port -N install php56-gmp
 mv /Applications/MacPorts/Python\ 2.7 /Applications/MacPorts/Python\ 2.7.$DATESTRING
 
 # Install PHP 7 but do not make it the default.
-port -N install php72-apache2handler
-port -N install php72-gd php72-ldap php72-mbstring php72-mcrypt php72-mysql php72-pear php72-opcache
-port -N install php72-iconv php72-xdebug php72-openssl
-port -N install php72-curl
-port -N install php72-gmp
 port -N install php73-apache2handler
 port -N install php73-gd php73-ldap php73-mbstring php73-mcrypt php73-mysql php73-opcache
 port -N install php73-iconv php73-xdebug php73-openssl
@@ -73,23 +68,6 @@ sed -Ei '' 's/(upload_max_filesize = )[0-9]+M/\175M/g' /opt/local/etc/php56/php.
 sed -Ei '' 's/(post_max_size = )[0-9]+M/\175M/g' /opt/local/etc/php56/php.ini
 # Increase max_execution_time to 8 minutes
 sed -Ei '' 's/(max_execution_time = )[0-9]+/\1480/g' /opt/local/etc/php56/php.ini
-
-cat /opt/local/etc/php72/php.ini-development | sed \
-  -e "s#pdo_mysql\.default_socket.*#pdo_mysql\.default_socket=${defSock}#" \
-  -e "s#mysql\.default_socket.*#mysql\.default_socket=${defSock}#" \
-  -e "s#mysqli\.default_socket.*#mysqli\.default_socket=${defSock}#" > /opt/local/etc/php72/php.ini
-echo "date.timezone = 'America/Chicago'" >> /opt/local/etc/php72/php.ini
-echo "error_log = /var/log/php.log" >> /opt/local/etc/php72/php.ini
-echo "xdebug.profiler_output_dir = '/tmp'" >> /opt/local/etc/php72/php.ini
-echo "xdebug.profiler_enable = 0" >> /opt/local/etc/php72/php.ini
-echo "xdebug.remote_enable = 1" >> /opt/local/etc/php72/php.ini
-# Increase memory limit to 1024M
-sed -Ei '' 's/(memory_limit = )[0-9]+M/\11024M/g' /opt/local/etc/php72/php.ini
-# Increase file upload size to 75M
-sed -Ei '' 's/(upload_max_filesize = )[0-9]+M/\175M/g' /opt/local/etc/php72/php.ini
-sed -Ei '' 's/(post_max_size = )[0-9]+M/\175M/g' /opt/local/etc/php72/php.ini
-# Increase max_execution_time to 8 minutes
-sed -Ei '' 's/(max_execution_time = )[0-9]+/\1480/g' /opt/local/etc/php72/php.ini
 
 cat /opt/local/etc/php73/php.ini-development | sed \
   -e "s#pdo_mysql\.default_socket.*#pdo_mysql\.default_socket=${defSock}#" \
@@ -178,19 +156,19 @@ echo
 echo "MySQL was not installed. To install, run separate script build_mysql."
 echo "Complete. Open a new Terminal window for profile settings to take effect."
 echo
-echo "Both PHP 5.6 and PHP 7.2 have been installed. PHP 5.6 is selected already."
+echo "Both PHP 5.6 and PHP 7.3 have been installed. PHP 5.6 is selected already."
 echo "To switch back and forth:"
 echo
 echo "Switch to PHP 5.6:"
 echo "sudo port select php php56"
-echo "sudo /opt/local/bin/apxs -A -e -n php7 mod_php72.so"
+echo "sudo /opt/local/bin/apxs -A -e -n php7 mod_php73.so"
 echo "sudo /opt/local/bin/apxs -a -e -n php5 mod_php56.so"
 echo "acr"
 echo
-echo "Switch to PHP 7.2:"
-echo "sudo port select php php72"
+echo "Switch to PHP 7.3:"
+echo "sudo port select php php73"
 echo "sudo /opt/local/bin/apxs -A -e -n php5 mod_php56.so"
-echo "sudo /opt/local/bin/apxs -a -e -n php7 mod_php72.so"
+echo "sudo /opt/local/bin/apxs -a -e -n php7 mod_php73.so"
 echo "acr"
 echo
 echo 'Note that if MacPorts put its $PATH modification code into .profile then'
