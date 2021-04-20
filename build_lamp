@@ -122,7 +122,7 @@ sed -i '' -e 's,#\(Include etc/apache2/extra/httpd-vhosts.conf\),\1,g' /opt/loca
 sed -i '' -e 's,#\(Include etc/apache2/extra/httpd-default.conf\),\1,g' /opt/local/etc/apache2/httpd.conf
 echo "ServerName $FQHN:80" >> /opt/local/etc/apache2/httpd.conf
 echo "Include etc/apache2/extra/mod_php56.conf" >> /opt/local/etc/apache2/httpd.conf
-echo "Include etc/apache2/extra/mod_php72.conf" >> /opt/local/etc/apache2/httpd.conf
+echo "Include etc/apache2/extra/mod_php73.conf" >> /opt/local/etc/apache2/httpd.conf
 echo "<VirtualHost *:80>" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
 echo "    ServerName local.test" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
 echo "    DocumentRoot "$HOME/Sites"" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
