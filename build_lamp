@@ -24,50 +24,20 @@ rm /Library/LaunchDaemons/org.macports.slapd.plist
 
 # Install apache2 and friends.
 port -N install apache2
-port -N install php56-apache2handler
-port -N install php56-gd php56-ldap php56-mbstring php56-mcrypt php56-mysql php56-pear
-case "$OSTYPE" in
-  darwin18)
-    echo "Skipping php56-opcache as it is broken on Mojave"
-    ;;
-  *)
-    port -N install php56-opcache
-    ;;
-esac
-port -N install php56-iconv php56-xdebug php56-openssl
-port -N install php56-curl
-port -N install php56-gmp
-/opt/local/bin/apxs -a -e -n php5 mod_php56.so
 /opt/local/bin/apxs -a -e -n rewrite mod_rewrite.so
 
 # Move MacPorts Python application out of the way to prevent stoppage.
 mv /Applications/MacPorts/Python\ 2.7 /Applications/MacPorts/Python\ 2.7.$DATESTRING
 
-# Install PHP 7 but do not make it the default.
+defSock='/opt/local/var/run/mysql57/mysqld.sock'
+
+# Install PHP 7.3.
 port -N install php73-apache2handler
 port -N install php73-gd php73-ldap php73-mbstring php73-mcrypt php73-mysql php73-opcache
 port -N install php73-iconv php73-xdebug php73-openssl
 port -N install php73-curl
 port -N install php73-gmp
-
-
-defSock='/opt/local/var/run/mysql57/mysqld.sock'
-cat /opt/local/etc/php56/php.ini-development | sed \
-  -e "s#pdo_mysql\.default_socket.*#pdo_mysql\.default_socket=${defSock}#" \
-  -e "s#mysql\.default_socket.*#mysql\.default_socket=${defSock}#" \
-  -e "s#mysqli\.default_socket.*#mysqli\.default_socket=${defSock}#" > /opt/local/etc/php56/php.ini
-echo "date.timezone = 'America/Chicago'" >> /opt/local/etc/php56/php.ini
-echo "error_log = /var/log/php.log" >> /opt/local/etc/php56/php.ini
-echo "xdebug.profiler_output_dir = '/tmp'" >> /opt/local/etc/php56/php.ini
-echo "xdebug.profiler_enable = 0" >> /opt/local/etc/php56/php.ini
-echo "xdebug.remote_enable = 1" >> /opt/local/etc/php56/php.ini
-# Increase memory limit to 1024M
-sed -Ei '' 's/(memory_limit = )[0-9]+M/\11024M/g' /opt/local/etc/php56/php.ini
-# Increase file upload size to 75M
-sed -Ei '' 's/(upload_max_filesize = )[0-9]+M/\175M/g' /opt/local/etc/php56/php.ini
-sed -Ei '' 's/(post_max_size = )[0-9]+M/\175M/g' /opt/local/etc/php56/php.ini
-# Increase max_execution_time to 8 minutes
-sed -Ei '' 's/(max_execution_time = )[0-9]+/\1480/g' /opt/local/etc/php56/php.ini
+/opt/local/bin/apxs -a -e -n php7 mod_php7.so
 
 cat /opt/local/etc/php73/php.ini-development | sed \
   -e "s#pdo_mysql\.default_socket.*#pdo_mysql\.default_socket=${defSock}#" \
@@ -75,9 +45,8 @@ cat /opt/local/etc/php73/php.ini-development | sed \
   -e "s#mysqli\.default_socket.*#mysqli\.default_socket=${defSock}#" > /opt/local/etc/php73/php.ini
 echo "date.timezone = 'America/Chicago'" >> /opt/local/etc/php73/php.ini
 echo "error_log = /var/log/php.log" >> /opt/local/etc/php73/php.ini
-echo "xdebug.profiler_output_dir = '/tmp'" >> /opt/local/etc/php73/php.ini
-echo "xdebug.profiler_enable = 0" >> /opt/local/etc/php73/php.ini
-echo "xdebug.remote_enable = 1" >> /opt/local/etc/php73/php.ini
+echo "xdebug.output_dir = '/tmp'" >> /opt/local/etc/php73/php.ini
+echo "xdebug.mode = profile" >> /opt/local/etc/php73/php.ini
 # Increase memory limit to 1024M
 sed -Ei '' 's/(memory_limit = )[0-9]+M/\11024M/g' /opt/local/etc/php73/php.ini
 # Increase file upload size to 75M
@@ -85,6 +54,29 @@ sed -Ei '' 's/(upload_max_filesize = )[0-9]+M/\175M/g' /opt/local/etc/php73/php.
 sed -Ei '' 's/(post_max_size = )[0-9]+M/\175M/g' /opt/local/etc/php73/php.ini
 # Increase max_execution_time to 8 minutes
 sed -Ei '' 's/(max_execution_time = )[0-9]+/\1480/g' /opt/local/etc/php73/php.ini
+
+# Install PHP 7.4.
+port -N install php74-apache2handler
+port -N install php74-gd php74-ldap php74-mbstring php74-mcrypt php74-mysql php74-opcache
+port -N install php74-iconv php74-xdebug php74-openssl
+port -N install php74-curl
+port -N install php74-gmp
+
+cat /opt/local/etc/php74/php.ini-development | sed \
+  -e "s#pdo_mysql\.default_socket.*#pdo_mysql\.default_socket=${defSock}#" \
+  -e "s#mysql\.default_socket.*#mysql\.default_socket=${defSock}#" \
+  -e "s#mysqli\.default_socket.*#mysqli\.default_socket=${defSock}#" > /opt/local/etc/php74/php.ini
+echo "date.timezone = 'America/Chicago'" >> /opt/local/etc/php74/php.ini
+echo "error_log = /var/log/php.log" >> /opt/local/etc/php74/php.ini
+echo "xdebug.output_dir = '/tmp'" >> /opt/local/etc/php74/php.ini
+echo "xdebug.mode = profile" >> /opt/local/etc/php74/php.ini
+# Increase memory limit to 1024M
+sed -Ei '' 's/(memory_limit = )[0-9]+M/\11024M/g' /opt/local/etc/php74/php.ini
+# Increase file upload size to 75M
+sed -Ei '' 's/(upload_max_filesize = )[0-9]+M/\175M/g' /opt/local/etc/php74/php.ini
+sed -Ei '' 's/(post_max_size = )[0-9]+M/\175M/g' /opt/local/etc/php74/php.ini
+# Increase max_execution_time to 8 minutes
+sed -Ei '' 's/(max_execution_time = )[0-9]+/\1480/g' /opt/local/etc/php74/php.ini
 
 # PHP will log errors to /var/log/php.log.
 touch /var/log/php.log
@@ -106,10 +98,6 @@ WWWROOT=/Users/$SUDO_USER/Sites
 mkdir -p $WWWROOT
 chown $SUDO_USER $WWWROOT
 
-# Change default DocumentRoot to ~/Sites
-# Don't do this. It is not necessary because we create a vhost instead.
-#sed -i '' -e "'s_/opt/local/www/apache2/html_${WWWROOT}_'" /opt/local/etc/apache2/httpd.conf
-
 # Provide default document that explains what is happening instead of MacPorts
 # default "It Works!" page.
 sh -c "echo '<html><body><p>You have reached the MacPorts default virtualhost. Try changing the hostname of your request to http://local.test/</p></body></html>' > /opt/local/www/apache2/html/index.html"
@@ -121,7 +109,6 @@ MYIP=$(ipconfig getifaddr en0)
 sed -i '' -e 's,#\(Include etc/apache2/extra/httpd-vhosts.conf\),\1,g' /opt/local/etc/apache2/httpd.conf
 sed -i '' -e 's,#\(Include etc/apache2/extra/httpd-default.conf\),\1,g' /opt/local/etc/apache2/httpd.conf
 echo "ServerName $FQHN:80" >> /opt/local/etc/apache2/httpd.conf
-echo "Include etc/apache2/extra/mod_php56.conf" >> /opt/local/etc/apache2/httpd.conf
 echo "Include etc/apache2/extra/mod_php73.conf" >> /opt/local/etc/apache2/httpd.conf
 echo "<VirtualHost *:80>" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
 echo "    ServerName local.test" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
@@ -145,8 +132,8 @@ mv /usr/bin/php-config /usr/bin/php-config.stock
 mv /usr/bin/phpize /usr/bin/phpize.stock
 echo "OK, start paying attention to errors again."
 
-# Map php, php-config, phpize to php56.
-port select php php56
+# Map php, php-config, phpize to php73.
+port select php php73
 
 echo 'te() { tail -f /opt/local/var/log/apache2/error_log; }' >> ~/.bash_profile
 echo 'ta() { tail -f /opt/local/var/log/apache2/access_log; }' >> ~/.bash_profile
@@ -156,19 +143,19 @@ echo
 echo "MySQL was not installed. To install, run separate script build_mysql."
 echo "Complete. Open a new Terminal window for profile settings to take effect."
 echo
-echo "Both PHP 5.6 and PHP 7.3 have been installed. PHP 5.6 is selected already."
+echo "Both PHP 7.3 and PHP 7.4 have been installed. PHP 7.3 is selected already."
 echo "To switch back and forth:"
-echo
-echo "Switch to PHP 5.6:"
-echo "sudo port select php php56"
-echo "sudo /opt/local/bin/apxs -A -e -n php7 mod_php73.so"
-echo "sudo /opt/local/bin/apxs -a -e -n php5 mod_php56.so"
-echo "acr"
 echo
 echo "Switch to PHP 7.3:"
 echo "sudo port select php php73"
-echo "sudo /opt/local/bin/apxs -A -e -n php5 mod_php56.so"
+echo "sudo /opt/local/bin/apxs -a -e -n php7 mod_php74.so"
+echo "sudo /opt/local/bin/apxs -A -e -n php7 mod_php73.so"
+echo "acr"
+echo
+echo "Switch to PHP 7.4:"
+echo "sudo port select php php74"
 echo "sudo /opt/local/bin/apxs -a -e -n php7 mod_php73.so"
+echo "sudo /opt/local/bin/apxs -A -e -n php7 mod_php74.so"
 echo "acr"
 echo
 echo 'Note that if MacPorts put its $PATH modification code into .profile then'

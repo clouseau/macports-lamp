@@ -17,8 +17,8 @@ Why
 ---
 MacPorts is powerful but finicky. I commonly end up with MySQL with
 the wrong permissions and other annoyances. Therefore this script, which will
-reliably install MariaDB 5.7 and PHP 5.6 and 7.2/7.3 plus Apache 2.4 on OS X. 
-At least, for me. Tested with MacPorts 2.6.4 on OS X 10.15.
+reliably install MariaDB 5.7 and PHP 7.3/7.4 plus Apache 2.4 on OS X. 
+At least, for me. Tested with MacPorts 2.7.1 on OS X 10.15.
 
 Prerequisites
 -------------
@@ -108,22 +108,22 @@ runs when you run python scripts (recommended), tell MacPorts that with
 sudo port select --set python python27
 ```
 
-Switching between PHP 5.6 and PHP 7.3:
+Switching between PHP 7.3 and PHP 7.4:
 
-Switch to PHP 5.6:
+Switch to PHP 7.4:
 ```
-sudo port select php php56
+sudo port select php php74
 sudo /opt/local/bin/apxs -A -e -n php7 mod_php72.so
 sudo /opt/local/bin/apxs -A -e -n php7 mod_php73.so
-sudo /opt/local/bin/apxs -a -e -n php5 mod_php56.so
+sudo /opt/local/bin/apxs -a -e -n php7 mod_php74.so
 acr
 ```
 
 Switch to PHP 7.3:
 ```
 sudo port select php php73
-sudo /opt/local/bin/apxs -A -e -n php5 mod_php56.so
-sudo /opt/local/bin/apxs -A -e -n php7 mod_php72.so
+sudo /opt/local/bin/apxs -A -e -n php5 mod_php72.so
+sudo /opt/local/bin/apxs -A -e -n php7 mod_php74.so
 sudo /opt/local/bin/apxs -a -e -n php7 mod_php73.so
 acr
 
