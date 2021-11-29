@@ -41,7 +41,7 @@ port -N install php73-gd php73-ldap php73-mbstring php73-mcrypt php73-mysql php7
 port -N install php73-iconv php73-xdebug php73-openssl
 port -N install php73-curl
 port -N install php73-gmp
-/opt/local/bin/apxs -a -e -n php7 mod_php7.so
+/opt/local/bin/apxs -a -e -n php7 mod_php73.so
 
 cat /opt/local/etc/php73/php.ini-development | sed \
   -e "s#pdo_mysql\.default_socket.*#pdo_mysql\.default_socket=${defSock}#" \
