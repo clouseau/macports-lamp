@@ -19,8 +19,12 @@ fi
 port selfupdate
 
 # Remove startup items; these will be replaced.
-rm /Library/LaunchDaemons/org.macports.apache2.plist
-rm /Library/LaunchDaemons/org.macports.slapd.plist
+if [ -e /Library/LaunchDaemons/org.macports.apache2.plist ]; then
+  rm /Library/LaunchDaemons/org.macports.apache2.plist
+fi
+if [ -e /Library/LaunchDaemons/org.macports.slapd.plist ]; then
+  rm /Library/LaunchDaemons/org.macports.slapd.plist
+fi
 
 # Install apache2 and friends.
 port -N install apache2
