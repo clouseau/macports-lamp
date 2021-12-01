@@ -16,6 +16,9 @@ port -N install mysql57-server
 
 if [ -e /opt/local/etc/mysql57/my.cnf ]; then
   mv /opt/local/etc/mysql57/my.cnf /opt/local/etc/mysql57/my.cnf.disabled
+  # Create empty file so as not to anger the macports activation sequence
+  # https://trac.macports.org/wiki/howto/MySQL#Configurationmy.cnf
+  touch /opt/local/etc/mysql57/my.cnf
   echo "Disabled my.cnf in /opt/local/etc/mysql55/my.cnf; please use /etc/my.cnf"
 fi
 
