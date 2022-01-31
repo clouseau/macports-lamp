@@ -44,7 +44,6 @@ port -N install php73-iconv php73-xdebug php73-openssl
 port -N install php73-curl
 port -N install php73-gmp
 port -N install php73-ldap
-/opt/local/bin/apxs -a -e -n php7 mod_php73.so
 
 cat /opt/local/etc/php73/php.ini-development | sed \
   -e "s#pdo_mysql\.default_socket.*#pdo_mysql\.default_socket=${defSock}#" \
@@ -85,6 +84,7 @@ sed -Ei '' 's/(upload_max_filesize = )[0-9]+M/\175M/g' /opt/local/etc/php74/php.
 sed -Ei '' 's/(post_max_size = )[0-9]+M/\175M/g' /opt/local/etc/php74/php.ini
 # Increase max_execution_time to 8 minutes
 sed -Ei '' 's/(max_execution_time = )[0-9]+/\1480/g' /opt/local/etc/php74/php.ini
+/opt/local/bin/apxs -a -e -n php7 mod_php73.so
 
 # PHP will log errors to /var/log/php.log.
 touch /var/log/php.log
@@ -140,8 +140,8 @@ mv /usr/bin/php-config /usr/bin/php-config.stock
 mv /usr/bin/phpize /usr/bin/phpize.stock
 echo "OK, start paying attention to errors again."
 
-# Map php, php-config, phpize to php73.
-port select php php73
+# Map php, php-config, phpize to php74.
+port select php php74
 
 echo 'te() { tail -f /opt/local/var/log/apache2/error_log; }' >> ~/.bash_profile
 echo 'ta() { tail -f /opt/local/var/log/apache2/access_log; }' >> ~/.bash_profile

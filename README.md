@@ -18,11 +18,11 @@ Why
 MacPorts is powerful but finicky. I commonly end up with MySQL with
 the wrong permissions and other annoyances. Therefore this script, which will
 reliably install MariaDB 5.7 and PHP 7.3/7.4 plus Apache 2.4 on OS X. 
-At least, for me. Tested with MacPorts 2.7.1 on OS X 10.15.
+At least, for me. Tested with MacPorts 2.7.1 on OS X 12.
 
 Prerequisites
 -------------
-If you had installed macports-lamp previously, export any MySQL databases
+If you had installed macports-lamp previously, export any MySQL databases you want to keep
 (since macports-lamp will install a clean 'n' fresh MySQL).
 
 Stop any running MacPorts services as in the following two examples. If 
@@ -35,7 +35,8 @@ sudo port unload mariadb-server
 
 Move/rename /Applications/MacPorts.
 
-Move the old MacPorts installation in /opt out of the way. If you have System Integrity Protection enabled, you will need to [disable it first](https://developer.apple.com/documentation/security/disabling_and_enabling_system_integrity_protection).
+Move the old MacPorts installation in /opt out of the way. If you have System Integrity
+Protection enabled, you may need to [disable it first](https://developer.apple.com/documentation/security/disabling_and_enabling_system_integrity_protection).
 
 ```
 sudo mv /opt/local /opt/local.old
@@ -101,8 +102,8 @@ sudo ./increase_limits
 ```
 
 One of the PHP 7 ports has a dependency on Python; thus MacPorts will install
-Python 2.7. If you would like to make this the default version of python that
-runs when you run python scripts (recommended), tell MacPorts that with
+Python. If you would like to make this the default version of python that
+runs when you run python scripts, tell MacPorts that with port select. E.g.,
 
 ```
 sudo port select --set python python27
@@ -134,7 +135,8 @@ If you disabled System Integrity Protection earlier, don't forget to [reenable i
 Troubleshooting
 ---------------
 
-If the MySQL installation messed up somehow, and you want to try it again, use the following to clean up and retry:
+If the MySQL installation messed up somehow, and you want to try it again, use the 
+following to clean up and retry:
 
 ```
 sudo port unload mysql57-server
