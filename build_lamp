@@ -37,10 +37,11 @@ defSock='/opt/local/var/run/mysql57/mysqld.sock'
 
 # Install PHP 7.3.
 port -N install php73-apache2handler
-port -N install php73-gd php73-ldap php73-mbstring php73-mcrypt php73-mysql php73-opcache
+port -N install php73-gd php73-mbstring php73-mcrypt php73-mysql php73-opcache
 port -N install php73-iconv php73-xdebug php73-openssl
 port -N install php73-curl
 port -N install php73-gmp
+port -N install php73-ldap
 /opt/local/bin/apxs -a -e -n php7 mod_php73.so
 
 cat /opt/local/etc/php73/php.ini-development | sed \
@@ -61,10 +62,11 @@ sed -Ei '' 's/(max_execution_time = )[0-9]+/\1480/g' /opt/local/etc/php73/php.in
 
 # Install PHP 7.4.
 port -N install php74-apache2handler
-port -N install php74-gd php74-ldap php74-mbstring php74-mcrypt php74-mysql php74-opcache
+port -N install php74-gd php74-mbstring php74-mcrypt php74-mysql php74-opcache
 port -N install php74-iconv php74-xdebug php74-openssl
 port -N install php74-curl
 port -N install php74-gmp
+port -N install php74-ldap
 
 cat /opt/local/etc/php74/php.ini-development | sed \
   -e "s#pdo_mysql\.default_socket.*#pdo_mysql\.default_socket=${defSock}#" \
