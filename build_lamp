@@ -26,12 +26,14 @@ if [ -e /Library/LaunchDaemons/org.macports.slapd.plist ]; then
   rm /Library/LaunchDaemons/org.macports.slapd.plist
 fi
 
+# Move MacPorts Python application out of the way to prevent stoppage.
+for i in /Applications/MacPorts/Python*; do
+  echo mv "$i" "${i}.${DATESTRING}"
+done
+
 # Install apache2 and friends.
 port -N install apache2
 /opt/local/bin/apxs -a -e -n rewrite mod_rewrite.so
-
-# Move MacPorts Python application out of the way to prevent stoppage.
-mv /Applications/MacPorts/Python\ 2.7 /Applications/MacPorts/Python\ 2.7.$DATESTRING
 
 defSock='/opt/local/var/run/mysql57/mysqld.sock'
 
