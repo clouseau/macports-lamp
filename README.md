@@ -17,7 +17,7 @@ Why
 ---
 MacPorts is powerful but finicky. I commonly end up with MySQL with
 the wrong permissions and other annoyances. Therefore this script, which will
-reliably install MariaDB 5.7 and PHP 7.3/7.4 plus Apache 2.4 on macOS. 
+reliably install MariaDB 5.7 and PHP 7.3/7.4/8.1 plus Apache 2.4 on macOS. 
 At least, for me. Tested with MacPorts 2.7.2 on OS X 12.5.1.
 
 Prerequisites
@@ -77,6 +77,17 @@ going to http://local.test/ after the script completes.
       AllowOverride All
     </Directory>
 </VirtualHost>
+<VirtualHost *:443>
+    ServerName local.test
+    ServerAlias *.local.test
+    DocumentRoot /Users/username/Sites
+    <Directory /Users/username/Sites>
+      Options Indexes FollowSymLinks
+      DirectoryIndex index.php index.html
+      Require local
+      AllowOverride All
+    </Directory>
+</VirtualHost>
 ```
 
 Shortcuts
@@ -97,24 +108,26 @@ Running the Scripts
 
 ```
 sudo ./build_lamp
+sudo ./build_ssl_cert
 sudo ./build_mysql
 sudo ./increase_limits
 ```
 
-One of the PHP 7 ports has a dependency on Python; thus MacPorts will install
-Python. If you would like to make this the default version of python that
-runs when you run python scripts, tell MacPorts that with port select. E.g.,
+Switching between PHP 7.3, PHP 7.4 and PHP 8.1:
 
+Switch to PHP 8.1:
 ```
-sudo port select --set python python27
+sudo port select php php81
+sudo /opt/local/bin/apxs -A -e -n php7 mod_php73.so
+sudo /opt/local/bin/apxs -A -e -n php7 mod_php74.so
+sudo /opt/local/bin/apxs -a -e -n php mod_php81.so
+acr
 ```
-
-Switching between PHP 7.3 and PHP 7.4:
 
 Switch to PHP 7.4:
 ```
 sudo port select php php74
-sudo /opt/local/bin/apxs -A -e -n php7 mod_php72.so
+sudo /opt/local/bin/apxs -A -e -n php mod_php81.so
 sudo /opt/local/bin/apxs -A -e -n php7 mod_php73.so
 sudo /opt/local/bin/apxs -a -e -n php7 mod_php74.so
 acr
@@ -123,7 +136,7 @@ acr
 Switch to PHP 7.3:
 ```
 sudo port select php php73
-sudo /opt/local/bin/apxs -A -e -n php5 mod_php72.so
+sudo /opt/local/bin/apxs -A -e -n php mod_php81.so
 sudo /opt/local/bin/apxs -A -e -n php7 mod_php74.so
 sudo /opt/local/bin/apxs -a -e -n php7 mod_php73.so
 acr
