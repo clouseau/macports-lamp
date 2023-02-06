@@ -22,9 +22,9 @@ if [ -e /opt/local/etc/mysql57/my.cnf ]; then
   echo "Disabled my.cnf in /opt/local/etc/mysql55/my.cnf; please use /etc/my.cnf"
 fi
 
-DATESTRING=`date +"%y%m%d%H%M"`
+DATESTRING=$(date +"%y%m%d%H%M")
 if [ -e /etc/my.cnf ]; then
-  mv /etc/my.cnf /etc/my.cnf.$DATESTRING
+  mv /etc/my.cnf "/etc/my.cnf.$DATESTRING"
   echo "Backed up /etc/my.cnf to /etc/my.cnf.$DATESTRING"
 fi
 if [ ! -e ./my.cnf ]; then
@@ -61,7 +61,7 @@ echo
 echo
 
 echo "Please enter the root password you'd like to use for MySQL:"
-read -s ROOTPW
+read -rs ROOTPW
 
 echo
 echo "Your Mac sudo password may be needed"
