@@ -1,12 +1,12 @@
 #!/bin/bash
 
-if [ -z $SUDO_USER ]; then
+if [ -z "$SUDO_USER" ]; then
   echo "Please run the script using sudo, e.g.,"
   echo ""
   echo "sudo ./build_lamp"
   exit 1
 fi
-DATESTRING=`date +"%y%m%d%H%M"`
+DATESTRING=$(date +"%y%m%d%H%M")
 
 PORTFOUND=$(type -P port)
 if [ "$PORTFOUND" == "" ]; then
@@ -86,6 +86,30 @@ sed -Ei '' 's/(post_max_size = )[0-9]+M/\175M/g' /opt/local/etc/php74/php.ini
 sed -Ei '' 's/(max_execution_time = )[0-9]+/\1480/g' /opt/local/etc/php74/php.ini
 /opt/local/bin/apxs -a -e -n php7 mod_php73.so
 
+# Install PHP 8.1.
+port -N install php81-apache2handler
+port -N install php81-gd php81-mbstring php81-mcrypt php81-mysql php81-opcache
+port -N install php81-iconv php81-xdebug php81-openssl
+port -N install php81-curl
+port -N install php81-gmp
+port -N install php81-ldap
+
+cat /opt/local/etc/php81/php.ini-development | sed \
+  -e "s#pdo_mysql\.default_socket.*#pdo_mysql\.default_socket=${defSock}#" \
+  -e "s#mysql\.default_socket.*#mysql\.default_socket=${defSock}#" \
+  -e "s#mysqli\.default_socket.*#mysqli\.default_socket=${defSock}#" > /opt/local/etc/php81/php.ini
+echo "date.timezone = 'America/Chicago'" >> /opt/local/etc/php81/php.ini
+echo "error_log = /var/log/php.log" >> /opt/local/etc/php81/php.ini
+echo "xdebug.output_dir = '/tmp'" >> /opt/local/etc/php81/php.ini
+echo "xdebug.mode = profile" >> /opt/local/etc/php81/php.ini
+# Increase memory limit to 1024M
+sed -Ei '' 's/(memory_limit = )[0-9]+M/\11024M/g' /opt/local/etc/php81/php.ini
+# Increase file upload size to 75M
+sed -Ei '' 's/(upload_max_filesize = )[0-9]+M/\175M/g' /opt/local/etc/php81/php.ini
+sed -Ei '' 's/(post_max_size = )[0-9]+M/\175M/g' /opt/local/etc/php81/php.ini
+# Increase max_execution_time to 8 minutes
+sed -Ei '' 's/(max_execution_time = )[0-9]+/\1480/g' /opt/local/etc/php81/php.ini
+
 # PHP will log errors to /var/log/php.log.
 touch /var/log/php.log
 chown _www /var/log/php.log
@@ -102,9 +126,9 @@ fi
 cp /opt/local/etc/apache2/extra/httpd-default.conf.orig /opt/local/etc/apache2/extra/httpd-default.conf
 
 # Websites will live in ~/Sites.
-WWWROOT=/Users/$SUDO_USER/Sites
-mkdir -p $WWWROOT
-chown $SUDO_USER $WWWROOT
+WWWROOT="/Users/${SUDO_USER}/Sites"
+mkdir -p "$WWWROOT"
+chown "$SUDO_USER $WWWROOT"
 
 # Provide default document that explains what is happening instead of MacPorts
 # default "It Works!" page.
@@ -112,7 +136,6 @@ sh -c "echo '<html><body><p>You have reached the MacPorts default virtualhost. T
 
 FQHN=$(hostname)
 echo "127.0.0.1 local.test" >> /etc/hosts
-MYIP=$(ipconfig getifaddr en0)
 # Uncomment the lines in httpd.conf to enable loading of vhost and default settings.
 sed -i '' -e 's,#\(Include etc/apache2/extra/httpd-vhosts.conf\),\1,g' /opt/local/etc/apache2/httpd.conf
 sed -i '' -e 's,#\(Include etc/apache2/extra/httpd-default.conf\),\1,g' /opt/local/etc/apache2/httpd.conf
@@ -128,6 +151,34 @@ echo "      Require local" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
 echo "      AllowOverride All" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
 echo "    </Directory>" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
 echo "</VirtualHost>" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "<VirtualHost *:443>" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "    ServerName local.test" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "    ServerAlias *.local.test" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "    DocumentRoot "$HOME/Sites"" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "    SSLCertificateFile /opt/local/etc/apache2/server.crt" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "    SSLCertificateKeyFile /opt/local/etc/apache2/server.key" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "    <Directory "$HOME/Sites">" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "      Options Indexes FollowSymLinks" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "      DirectoryIndex index.php index.html" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "      Require local" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "      AllowOverride All" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "    </Directory>" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+echo "</VirtualHost>" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
+
+# Build local cert.
+cd /opt/local/etc/apache2
+openssl req -new -days 3650 -nodes -x509 -subj '/C=US/ST=Grace/L=Gotham/O=Org/CN=*.local.test' -nodes -keyout server.key -out server.crt -addext 'subjectAltName=DNS:*.local.test,DNS:local.test'
+
+# Enable SSL default conf file
+cp /opt/local/etc/apache2/extra/httpd-ssl.conf.orig /opt/local/etc/apache2/extra/httpd-ssl.conf
+
+echo 'Include etc/apache2/extra/httpd-ssl.conf' >> /opt/local/etc/apache2/httpd.conf
+
+# Enable Apache module support for SSL.
+/opt/local/bin/apxs -a -e -n ssl mod_ssl.so
+/opt/local/bin/apxs -a -e -n cache mod_cache.so
+/opt/local/bin/apxs -a -e -n cache_socache mod_cache_socache.so
+/opt/local/bin/apxs -a -e -n socache_shmcb mod_socache_shmcb.so
 
 # Start Apache
 port load apache2
@@ -156,14 +207,23 @@ echo "To switch back and forth:"
 echo
 echo "Switch to PHP 7.3:"
 echo "sudo port select php php73"
-echo "sudo /opt/local/bin/apxs -a -e -n php7 mod_php74.so"
-echo "sudo /opt/local/bin/apxs -A -e -n php7 mod_php73.so"
+echo "sudo /opt/local/bin/apxs -A -e -n php7 mod_php74.so"
+echo "sudo /opt/local/bin/apxs -A -e -n php mod_php81.so"
+echo "sudo /opt/local/bin/apxs -a -e -n php7 mod_php73.so"
 echo "acr"
 echo
 echo "Switch to PHP 7.4:"
 echo "sudo port select php php74"
-echo "sudo /opt/local/bin/apxs -a -e -n php7 mod_php73.so"
+echo "sudo /opt/local/bin/apxs -A -e -n php7 mod_php73.so"
+echo "sudo /opt/local/bin/apxs -A -e -n php mod_php81.so"
+echo "sudo /opt/local/bin/apxs -a -e -n php7 mod_php74.so"
+echo "acr"
+echo
+echo "Switch to PHP 8.1:"
+echo "sudo port select php php81"
+echo "sudo /opt/local/bin/apxs -A -e -n php7 mod_php73.so"
 echo "sudo /opt/local/bin/apxs -A -e -n php7 mod_php74.so"
+echo "sudo /opt/local/bin/apxs -a -e -n php mod_php81.so"
 echo "acr"
 echo
 echo 'Note that if MacPorts put its $PATH modification code into .profile then'
