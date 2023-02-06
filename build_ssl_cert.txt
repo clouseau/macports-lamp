@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+if [ -z "$SUDO_USER" ]; then
+  echo "Please run the script using sudo, e.g.,"
+  echo ""
+  echo "sudo ./build_ssl_cert"
+  exit 1
+fi
+
+# Build local cert.
+if [ ! -d /opt/local/etc/apache22 ]; then
+  echo "An Apache installation is required. Please run ./build_lamp first."
+  exit 1
+fi
+
+cd /opt/local/etc/apache2
+openssl req -new -days 3650 -nodes -x509 -subj '/C=US/ST=Grace/L=Gotham/O=Org/CN=*.local.test' -nodes -keyout server.key -out server.crt -addext 'subjectAltName=DNS:*.local.test,DNS:local.test'
+
+# Enable ssl conf file
+cp /opt/local/etc/apache2/extra/httpd-ssl.conf.orig /opt/local/etc/apache2/extra/httpd-ssl.conf
+
+echo 'Include etc/apache2/extra/httpd-ssl.conf' | sudo tee -a /opt/local/etc/apache2/httpd.conf
+
+# Activate needed modules
+/opt/local/bin/apxs -a -e -n ssl mod_ssl.so
+/opt/local/bin/apxs -a -e -n cache mod_cache.so
+/opt/local/bin/apxs -a -e -n cache_socache mod_cache_socache.so
+/opt/local/bin/apxs -a -e -n socache_shmcb mod_socache_shmcb.so
