@@ -42,7 +42,8 @@ defSock='/opt/local/var/run/mysql8/mysqld.sock'
 
 # Install PHP 7.3.
 port -N install php73-apache2handler
-port -N install php73-gd php73-mbstring php73-mcrypt php73-mysql php73-opcache
+port -N install php73-mysql +mysql8
+port -N install php73-gd php73-mbstring php73-mcrypt php73-opcache
 port -N install php73-iconv php73-xdebug php73-openssl
 port -N install php73-curl
 port -N install php73-gmp
@@ -66,7 +67,8 @@ sed -Ei '' 's/(max_execution_time = )[0-9]+/\1480/g' /opt/local/etc/php73/php.in
 
 # Install PHP 7.4.
 port -N install php74-apache2handler
-port -N install php74-gd php74-mbstring php74-mcrypt php74-mysql php74-opcache
+port -N install php74-mysql +mysql8
+port -N install php74-gd php74-mbstring php74-mcrypt php74-opcache
 port -N install php74-iconv php74-xdebug php74-openssl
 port -N install php74-curl
 port -N install php74-gmp
@@ -90,7 +92,8 @@ sed -Ei '' 's/(max_execution_time = )[0-9]+/\1480/g' /opt/local/etc/php74/php.in
 
 # Install PHP 8.1.
 port -N install php81-apache2handler
-port -N install php81-gd php81-mbstring php81-mcrypt php81-mysql php81-opcache
+port -N install php81-mysql +mysql8
+port -N install php81-gd php81-mbstring php81-mcrypt php81-opcache
 port -N install php81-iconv php81-xdebug php81-openssl
 port -N install php81-curl
 port -N install php81-gmp
