@@ -16,14 +16,17 @@ if [ "$PORTFOUND" == "" ]; then
 fi
 
 # Update ports tree.
-port selfupdate
+#port selfupdate
 
 # Remove startup items; these will be replaced.
-if [ -e /Library/LaunchDaemons/org.macports.apache2.plist ]; then
+if [ -L /Library/LaunchDaemons/org.macports.apache2.plist ]; then
   rm /Library/LaunchDaemons/org.macports.apache2.plist
 fi
-if [ -e /Library/LaunchDaemons/org.macports.slapd.plist ]; then
+if [ -L /Library/LaunchDaemons/org.macports.slapd.plist ]; then
   rm /Library/LaunchDaemons/org.macports.slapd.plist
+fi
+if [ -L /Library/LaunchDaemons/org.macports.slapd.plist ]; then
+  rm /Library/LaunchDaemons/org.macports.MailHog.plist 
 fi
 
 # Move MacPorts Python application out of the way to prevent stoppage.
@@ -35,7 +38,7 @@ done
 port -N install apache2
 /opt/local/bin/apxs -a -e -n rewrite mod_rewrite.so
 
-defSock='/opt/local/var/run/mysql57/mysqld.sock'
+defSock='/opt/local/var/run/mysql8/mysqld.sock'
 
 # Install PHP 7.3.
 port -N install php73-apache2handler
@@ -84,7 +87,6 @@ sed -Ei '' 's/(upload_max_filesize = )[0-9]+M/\175M/g' /opt/local/etc/php74/php.
 sed -Ei '' 's/(post_max_size = )[0-9]+M/\175M/g' /opt/local/etc/php74/php.ini
 # Increase max_execution_time to 8 minutes
 sed -Ei '' 's/(max_execution_time = )[0-9]+/\1480/g' /opt/local/etc/php74/php.ini
-/opt/local/bin/apxs -a -e -n php7 mod_php73.so
 
 # Install PHP 8.1.
 port -N install php81-apache2handler
@@ -109,10 +111,13 @@ sed -Ei '' 's/(upload_max_filesize = )[0-9]+M/\175M/g' /opt/local/etc/php81/php.
 sed -Ei '' 's/(post_max_size = )[0-9]+M/\175M/g' /opt/local/etc/php81/php.ini
 # Increase max_execution_time to 8 minutes
 sed -Ei '' 's/(max_execution_time = )[0-9]+/\1480/g' /opt/local/etc/php81/php.ini
+/opt/local/bin/apxs -a -e -n php mod_php81.so
 
 # PHP will log errors to /var/log/php.log.
 touch /var/log/php.log
 chown _www /var/log/php.log
+
+chown -R g+w /var/log/apache2
 
 # If user has existing httpd.conf, httpd-vhosts.conf and httpd-default.conf back them up.
 cp /opt/local/etc/apache2/httpd.conf /opt/local/etc/apache2/httpd.conf.bak
@@ -140,7 +145,8 @@ echo "127.0.0.1 local.test" >> /etc/hosts
 sed -i '' -e 's,#\(Include etc/apache2/extra/httpd-vhosts.conf\),\1,g' /opt/local/etc/apache2/httpd.conf
 sed -i '' -e 's,#\(Include etc/apache2/extra/httpd-default.conf\),\1,g' /opt/local/etc/apache2/httpd.conf
 echo "ServerName $FQHN:80" >> /opt/local/etc/apache2/httpd.conf
-echo "Include etc/apache2/extra/mod_php73.conf" >> /opt/local/etc/apache2/httpd.conf
+echo "Include etc/apache2/extra/mod_php74.conf" >> /opt/local/etc/apache2/httpd.conf
+echo "Include etc/apache2/extra/mod_php81.conf" >> /opt/local/etc/apache2/httpd.conf
 echo "<VirtualHost *:80>" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
 echo "    ServerName local.test" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
 echo "    DocumentRoot "$HOME/Sites"" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
@@ -167,7 +173,16 @@ echo "</VirtualHost>" >> /opt/local/etc/apache2/extra/httpd-vhosts.conf
 
 # Build local cert.
 cd /opt/local/etc/apache2
-openssl req -new -days 3650 -nodes -x509 -subj '/C=US/ST=Grace/L=Gotham/O=Org/CN=*.local.test' -nodes -keyout server.key -out server.crt -addext 'subjectAltName=DNS:*.local.test,DNS:local.test'
+# Create certificate authority.
+openssl req -new -days 3650 -nodes -x509 -subj '/C=US/ST=Grace/L=Gotham/O=Org/CN=*.local.test' -nodes -keyout server.key -out server.crt -addext 'subjectAltName=DNS:*.local.test,DNS:local.test,DNS:www.example.com'
+# Sign request, create key.
+openssl req -new -x509 -days 3650 -nodes -subj '/C=US/ST=Grace/L=Gotham/O=Org/CN=MyCA' -keyout ca.key -out ca.crt
+openssl req -new -keyout server.key -out server.csr -nodes -subj '/C=US/ST=Grace/L=Gotham/O=Org/CN=*.local.test'
+# Sign cert.
+echo "subjectAltName=DNS:*.local.test,DNS:local.test,DNS:www.example.com" | sudo tee extfile.cnf > /dev/null
+openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 3650 -extfile extfile.cnf
+# Readable by Apache user _www.
+chown _www /opt/local/etc/apache2/server.key
 
 # Enable SSL default conf file
 cp /opt/local/etc/apache2/extra/httpd-ssl.conf.orig /opt/local/etc/apache2/extra/httpd-ssl.conf
@@ -191,8 +206,8 @@ mv /usr/bin/php-config /usr/bin/php-config.stock
 mv /usr/bin/phpize /usr/bin/phpize.stock
 echo "OK, start paying attention to errors again."
 
-# Map php, php-config, phpize to php74.
-port select php php74
+# Map php, php-config, phpize to php81.
+port select php php81
 
 echo 'te() { tail -f /opt/local/var/log/apache2/error_log; }' >> ~/.bash_profile
 echo 'ta() { tail -f /opt/local/var/log/apache2/access_log; }' >> ~/.bash_profile
@@ -202,7 +217,7 @@ echo
 echo "MySQL was not installed. To install, run separate script build_mysql."
 echo "Complete. Open a new Terminal window for profile settings to take effect."
 echo
-echo "Both PHP 7.3 and PHP 7.4 have been installed. PHP 7.3 is selected already."
+echo "PHP 8.1, 7.4 and 7.3 have been installed. PHP 8.1 is selected already."
 echo "To switch back and forth:"
 echo
 echo "Switch to PHP 7.3:"

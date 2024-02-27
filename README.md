@@ -1,15 +1,13 @@
 macports-lamp
 =============
 
-Builds a LAMP (MAMP) stack on macOS 12.5.1 Monterey using MacPorts.
+Builds a LAMP (MAMP) stack on macOS 14.3 Sonoma using MacPorts.
 
 Intended to be used on a fresh macOS install. 
 
-The main branch supports MySQL 5.7.
+The main branch supports MySQL 8.
 
-The mariadb55 branch supports MariaDB 5.5.
-
-For versions of macOS before 10.13 use the pre-high-sierra branch.
+For versions of macOS before Sonoma use the appropriate branch.
 
 Please read this README all the way through before beginning.
 
@@ -17,8 +15,8 @@ Why
 ---
 MacPorts is powerful but finicky. I commonly end up with MySQL with
 the wrong permissions and other annoyances. Therefore this script, which will
-reliably install MariaDB 5.7 and PHP 7.3/7.4/8.1 plus Apache 2.4 on macOS. 
-At least, for me. Tested with MacPorts 2.7.2 on OS X 12.5.1.
+reliably install MySQL and PHP 7.3/7.4/8.1 plus Apache 2.4 on macOS. 
+At least, for me. Tested with MacPorts 2.9.2 on OS X 14.3.1.
 
 Prerequisites
 -------------
@@ -30,19 +28,19 @@ these give you errors, just continue.
 
 ```
 sudo port unload apache2
-sudo port unload mariadb-server
+sudo port unload mysql8-server
 ```
 
-Move/rename /Applications/MacPorts.
+Move the old MacPorts installation in /opt out of the way. 
 
-Move the old MacPorts installation in /opt out of the way. If you have System Integrity
-Protection enabled, you may need to [disable it first](https://developer.apple.com/documentation/security/disabling_and_enabling_system_integrity_protection).
+If you have System Integrity Protection enabled, you may need to [disable it first](https://developer.apple.com/documentation/security/disabling_and_enabling_system_integrity_protection).
 
 ```
 sudo mv /opt/local /opt/local.old
 ```
 
-Install [MacPorts](http://www.macports.org/install.php) with its prerequisites.
+If you get the error "Operation not permitted" you may need to give Terminal 
+Full Disk Access (System Settings / Privacy & Security / Full Disk Access).
 
 Make sure to install XCode and do
 
@@ -51,13 +49,15 @@ sudo xcodebuild -license
 xcode-select --install
 ```
 
-macports-lamp comes with a my.cnf file for MySQL 5.7 that it will place at
+Install [MacPorts](http://www.macports.org/install.php) with its prerequisites.
+
+macports-lamp comes with a my.cnf file for MySQL 8 that it will place at
 /etc/my.cnf. If you already had a my.cnf there it will be moved out of the way.
 
-MySQL 5.7 will use the following socket:
+MySQL 8 will use the following socket:
 
 ```
-socket		= /opt/local/var/run/mysql57/mysqld.sock
+socket		= /opt/local/var/run/mysql8/mysqld.sock
 ```
 
 Default Virtual Host
