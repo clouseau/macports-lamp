@@ -212,6 +212,10 @@ echo "OK, start paying attention to errors again."
 # Map php, php-config, phpize to php81.
 port select php php81
 
+# Use GNU patch
+port install gpatch
+ln -s /opt/local/bin/gpatch /opt/local/bin/patch
+
 echo 'te() { tail -f /opt/local/var/log/apache2/error_log; }' >> ~/.bash_profile
 echo 'ta() { tail -f /opt/local/var/log/apache2/access_log; }' >> ~/.bash_profile
 echo 'tp() { tail -f /var/log/php.log; }' >> ~/.bash_profile
