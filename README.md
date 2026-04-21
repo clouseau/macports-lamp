@@ -1,6 +1,8 @@
 macports-lamp
 =============
 
+*Note: this project is unsupported. We have moved local development to Homebrew and DDEV.*
+
 Builds a LAMP (MAMP) stack on macOS 14.3 Sonoma using MacPorts.
 
 Intended to be used on a fresh macOS install. 
